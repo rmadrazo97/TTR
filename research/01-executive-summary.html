@@ -19,6 +19,7 @@
     <a href="06-product.html">6 · Product</a>
     <a href="07-risks-next.html">7 · Risks</a>
     <a href="08-spain-pilot.html">8 · Spain Pilot</a>
+    <a target="_blank" rel="noopener" href="09-glossary.html">Glossary</a>
   </div>
 </div></nav>
 
@@ -33,64 +34,89 @@
   too manual, and priced for fleets. We turn a phone photo into a filed claim.</p>
 
   <h2><span class="n">1.1</span> The problem</h2>
-  <p>An EU truck crossing borders overpays — or simply never reclaims — three legally recoverable pools:
-  <strong>(1)</strong> VAT on diesel, tolls, AdBlue and repairs bought abroad (Directive 2008/9/EC);
-  <strong>(2)</strong> partial <strong>professional-diesel excise</strong> refunds in France, Belgium, Italy, Spain and others;
-  and <strong>(3)</strong> <strong>per-diem / days-abroad income-tax relief</strong> for the driver.
-  Combined, that is roughly <strong>€6,000 in fuel VAT + excise per international truck per year</strong>, plus
-  driver income-tax relief on top. Most of it goes unclaimed because of invoice-format rules, multi-country
-  portals, language, cost, and a hard 30 September deadline.</p>
+  <p>An EU truck crossing borders overpays — or simply never reclaims — <strong>three legally recoverable pools</strong>:</p>
+  <ul>
+    <li><strong>Foreign VAT</strong> on diesel, tolls, AdBlue and repairs bought abroad (Directive 2008/9/EC).</li>
+    <li><strong>Professional-diesel excise</strong> — partial refunds in France, Belgium, Italy, Spain and others.</li>
+    <li><strong>Per-diem / days-abroad income-tax relief</strong> for the driver.</li>
+  </ul>
+  <p>Combined, that is roughly <strong>€6,000 in fuel VAT + excise per international truck per year</strong>, plus
+  driver income-tax relief on top. Most of it goes unclaimed because of <strong>invoice-format rules, multi-country
+  portals, language, cost, and a hard 30 September deadline</strong>.</p>
 
   <h2><span class="n">1.2</span> Who suffers most — and why they're our wedge</h2>
-  <p>~90% of EU road-freight operators are micro-fleets and owner-operators. They are structurally underserved:
-  fuel-card majors bundle recovery but only on <em>their own card spend</em> (a lock-in tax); reclaim specialists
-  are consultative, success-fee, "email us your invoices" shops built for fleets, and the directive's own
-  <strong>€400 quarterly / €50 annual minimums</strong> discourage the smallest operators. <strong>No player is
-  simultaneously card-agnostic, self-serve, micro-priced, and bundling all three recoveries.</strong> That is the open lane.</p>
+  <p><strong>~90% of EU road-freight operators are micro-fleets and owner-operators</strong> — and structurally underserved:</p>
+  <ul>
+    <li><strong>Fuel-card majors</strong> bundle recovery, but only on <em>their own card spend</em> — a lock-in tax.</li>
+    <li><strong>Reclaim specialists</strong> are consultative, success-fee, "email-us-your-invoices" shops built for fleets.</li>
+    <li><strong>Minimum claim sizes.</strong> The VAT-refund directive won't accept a claim below <strong>€400</strong>
+    for a part-year filing (3–11 months) or <strong>€50</strong> for the full year — so an operator with little foreign
+    spend must wait to accumulate enough before it can reclaim anything, or skip it altogether.</li>
+  </ul>
+  <p><strong>No player is simultaneously card-agnostic, self-serve, micro-priced, and bundling all three recoveries.</strong>
+  That is the open lane.</p>
 
   <div class="cols">
     <div>
       <h3>What we build</h3>
-      <p>A mobile-first, AI-native platform. Drivers forward a photo of a receipt (WhatsApp, email, or app);
-      Claude-vision extraction + a per-country rules engine turn it into a validated, filing-ready claim.
-      Billing is <strong>no-win-no-fee</strong> — a success fee on money actually recovered.</p>
+      <ul>
+        <li><strong>Mobile-first.</strong> Drivers forward a photo of a receipt (WhatsApp, email, or app).</li>
+        <li><strong>Multimodal AI extraction (OCR + vision LLMs)</strong> plus a per-country rules engine turn it into a validated, filing-ready claim.</li>
+        <li><strong>No-win-no-fee.</strong> A success fee on money actually recovered.</li>
+      </ul>
     </div>
     <div>
       <h3>Why now</h3>
-      <p><strong>National e-invoicing mandates</strong> (Spain Verifactu, Italy, France 2026–27; EU ViDA following ~2030)
-      make invoices machine-readable, collapsing the cost-to-serve the fragmented long tail. Margin pressure and a
-      structural driver shortage make every €900/truck matter more. AI receipt extraction is finally good enough for money documents.</p>
+      <ul>
+        <li><strong>E-invoicing mandates</strong> (Spain Verifactu, Italy, France 2026–27; EU ViDA ~2030) make invoices machine-readable, collapsing the cost-to-serve the fragmented long tail.</li>
+        <li><strong>Margin pressure + a structural driver shortage</strong> make every €900/truck matter more.</li>
+        <li><strong>The enabling tech is finally mature and cheap.</strong> Commodity AI extraction (low-cost proprietary APIs + capable OSS models) drops cost-to-serve enough to make the micro-segment profitable at a <strong>~15% fee</strong>.</li>
+      </ul>
     </div>
   </div>
 
   <h2><span class="n">1.3</span> The numbers</h2>
   <div class="stats">
-    <div class="stat"><div class="v teal">€10.8B</div><div class="k">TAM — recoverable fuel VAT + excise, all EU international trucks</div></div>
-    <div class="stat"><div class="v">€5.5B</div><div class="k">SAM — the SME / owner-operator segment we target</div></div>
-    <div class="stat"><div class="v">~€28M</div><div class="k">SOM — fee revenue run-rate at ~3–4% of SAM in 3 years</div></div>
+    <div class="stat"><div class="v teal">€10.8B</div><div class="k">TAM (Total Addressable Market) — recoverable fuel VAT + excise, all EU international trucks</div></div>
+    <div class="stat"><div class="v">€5.5B</div><div class="k">SAM (Serviceable Addressable Market) — the SME / owner-operator segment we target</div></div>
+    <div class="stat"><div class="v">~€28M</div><div class="k">SOM (Serviceable Obtainable Market) — fee revenue run-rate at ~3–4% of SAM in 3 years</div></div>
     <div class="stat"><div class="v">~5–15%</div><div class="k">Success-fee band; we win on bundle + self-serve, not on price</div></div>
   </div>
 
   <h2><span class="n">1.4</span> How we get there — build fast, measure € recovered</h2>
   <div class="cols-3">
     <div class="phase ph-poc"><div class="ph-head"><span class="lbl">POC</span><span class="wk">Wk 0–8</span></div>
-      <div class="ph-body"><p class="small" style="margin:0">Wizard-of-Oz. WhatsApp/email ingest → Claude OCR → <strong>human</strong> verifies &amp; files. Prove drivers grant rights, send docs, and € is identified &amp; filed.</p></div></div>
+      <div class="ph-body"><ul class="small" style="margin:0;padding-left:16px">
+        <li><strong>Email / WhatsApp interface</strong> for drivers to submit receipts.</li>
+        <li>A simple <strong>internal web console</strong> to monitor, track and manage users and their recovery jobs — for debugging and hands-on management.</li>
+        <li>AI extraction pre-fills each claim; the team verifies and files.</li>
+        <li><strong>Goal:</strong> prove drivers grant rights, send docs, and € is identified &amp; filed.</li>
+      </ul></div></div>
     <div class="phase ph-mvp"><div class="ph-head"><span class="lbl">MVP</span><span class="wk">Mo 2–5</span></div>
-      <div class="ph-body"><p class="small" style="margin:0">Self-serve PWA, dual-extractor pipeline, claim-readiness dashboard, success-fee billing. One flow end-to-end: <strong>foreign fuel VAT</strong>.</p></div></div>
+      <div class="ph-body"><ul class="small" style="margin:0;padding-left:16px">
+        <li><strong>Self-serve web platform + PWA</strong> — accessible visibility for users: claim status, € ready, € recovered.</li>
+        <li>Dual-extractor pipeline, claim-readiness dashboard, success-fee billing.</li>
+        <li>One flow end-to-end: <strong>foreign fuel VAT</strong>.</li>
+      </ul></div></div>
     <div class="phase ph-plat"><div class="ph-head"><span class="lbl">PLATFORM</span><span class="wk">Mo 6–18</span></div>
-      <div class="ph-body"><p class="small" style="margin:0">Mobile apps, fuel-card/TMS + tachograph ingest, multi-country rules engine, automated e-filing, white-label.</p></div></div>
+      <div class="ph-body"><ul class="small" style="margin:0;padding-left:16px">
+        <li><strong>Full platform — web + native mobile</strong> versions.</li>
+        <li>Fuel-card / TMS + tachograph ingest, multi-country rules engine.</li>
+        <li>Automated e-filing; white-label.</li>
+      </ul></div></div>
   </div>
 
-  <h2><span class="n">1.5</span> The recommendation</h2>
-  <div class="callout good">
-    <span class="lbl">Go — with a disciplined Spanish beachhead</span>
-    <p>Start with <strong>Spanish international-running 1–10-truck carriers</strong>. Monetise the <strong>foreign VAT + excise
-    they abandon today</strong> (~€6,000/truck/yr, manual and painful); use the already-familiar <em>gasóleo profesional</em>
-    refund as a <strong>trust hook</strong>, not the revenue (it's already automated via fuel cards). Run an 8-week concierge
-    pilot to validate the two load-bearing numbers — <strong>€ recovered per truck</strong> and <strong>willingness to pay a
-    success fee</strong> — and to prove the <strong>apoderamiento / digital-certificate onboarding</strong>, which is the real gate.
-    See the <a class="ref" href="08-spain-pilot.html">Spain Pilot Plan →</a></p>
-  </div>
+  <h2><span class="n">1.5</span> The POC / Pilot</h2>
+  <p>A focused Spanish pilot to prove the model before scaling — each step gates the next:</p>
+  <ol class="cascade">
+    <li><span class="cl">Target the right carrier</span><span class="cd">Spanish, internationally-running, 1–10 trucks.</span></li>
+    <li><span class="cl">Monetise the money they abandon today</span><span class="cd">Foreign VAT + excise left unclaimed — ~€6,000/truck/yr, today manual and painful.</span></li>
+    <li><span class="cl">Lead with a trust hook, not the revenue</span><span class="cd">The familiar <em>gasóleo profesional</em> refund builds trust; it isn't the money (it's already automated via fuel cards).</span></li>
+    <li><span class="cl">Run an 8-week concierge pilot</span><span class="cd">Hands-on, end-to-end — we file for the carrier.</span></li>
+    <li><span class="cl">Validate the two make-or-break numbers</span><span class="cd">€ recovered per truck, and willingness to pay a success fee.</span></li>
+    <li><span class="cl">Clear the real gate</span><span class="cd"><em>Apoderamiento</em> / digital-certificate onboarding — the true bottleneck.</span></li>
+  </ol>
+  <p class="small" style="margin-top:8px">Full detail in the <a class="ref" target="_blank" rel="noopener" href="08-spain-pilot.html">Spain Pilot Plan →</a></p>
 
   <div class="pager">
     <a class="empty" href="#"></a>

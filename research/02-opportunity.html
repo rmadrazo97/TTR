@@ -19,6 +19,7 @@
     <a href="06-product.html">6 · Product</a>
     <a href="07-risks-next.html">7 · Risks</a>
     <a href="08-spain-pilot.html">8 · Spain Pilot</a>
+    <a target="_blank" rel="noopener" href="09-glossary.html">Glossary</a>
   </div>
 </div></nav>
 
@@ -77,13 +78,14 @@
 
   <h2><span class="n">2.2</span> Stream A — Cross-border VAT refund (Directive 2008/9/EC, successor to the 8th Directive)</h2>
   <p>A carrier VAT-registered at home but not in the country where it bought diesel/tolls/repairs reclaims that
-  foreign VAT <em>electronically through its home portal</em> — it does not file a foreign return.</p>
+  foreign VAT <em>electronically through its home portal</em> — it does not file a foreign return.<sup class="cite"><a target="_blank" rel="noopener" href="https://taxation-customs.ec.europa.eu/taxation/vat/vat-directive/vat-refunds_en" title="EC — VAT refunds">2</a></sup></p>
   <div class="cols">
     <ul>
-      <li><strong>Deadline:</strong> 30 September of the following year — hard, no extensions.</li>
-      <li><strong>Thresholds (Art. 17):</strong> €400 for a 3–11 month period; €50 for a full year. Invoice copies required where base ≥ €1,000 — <strong>≥ €250 for fuel</strong> (most fills clear this → shapes the ingestion product).</li>
-      <li><strong>Timeline:</strong> refund state decides in 4 months (6–8 if it queries); interest owed on delay.</li>
-      <li><strong>Non-EU carriers</strong> (UK, CH, TR) use the slower, paper-based 13th Directive.</li>
+      <li><strong>Deadline:</strong> 30 September of the following year — hard, no extensions.<sup class="cite"><a target="_blank" rel="noopener" href="https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX:32008L0009" title="EUR-Lex — Directive 2008/9/EC">1</a></sup></li>
+      <li><strong>Minimum claim size (Art. 17):</strong> you can't file below <strong>€400</strong> for a part-year claim (3–11 months), or <strong>€50</strong> for a full year.<sup class="cite"><a target="_blank" rel="noopener" href="https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX:32008L0009" title="EUR-Lex — Directive 2008/9/EC, Art. 17">1</a></sup></li>
+      <li><strong>Invoice copies:</strong> the portal wants an image of the actual invoice once an item's pre-tax value tops <strong>€1,000 — but only €250 for fuel</strong>. Most diesel fills clear €250, so nearly every fuel claim needs the full invoice → our ingestion must capture <strong>invoices, not just card slips</strong>.</li>
+      <li><strong>Timeline:</strong> the refund country decides in 4 months (6–8 if it queries); interest is owed on delay.</li>
+      <li><strong>Non-EU carriers</strong> (UK, CH, TR) use the slower, paper-based 13th Directive.<sup class="cite"><a target="_blank" rel="noopener" href="https://taxation-customs.ec.europa.eu/taxation/vat/vat-directive/vat-refunds_en" title="EC — VAT refunds">2</a></sup></li>
     </ul>
     <table class="t-tight">
       <thead><tr><th>Expense abroad</th><th>Recoverable?</th></tr></thead>
@@ -98,41 +100,40 @@
     </table>
   </div>
   <div class="callout warn"><span class="lbl">Legal wrinkle — the fuel-card question (CJEU Vega International C-235/18)</span>
-    <p>When diesel is bought through a fuel card, the card issuer's supply can be treated as a VAT-exempt grant of
-    credit — meaning the pump receipt is <em>not</em> the claimant's valid invoice and recoverability depends on the
-    issuer's commissionaire structuring. The "photo of receipt" pipeline must know <strong>whose invoice it holds</strong>
-    (station vs issuer). This is the single biggest legal risk to Stream A and a product-design constraint.</p>
+    <p>Diesel bought on a fuel card can count as the issuer's VAT-exempt credit, not a fuel supply — so the pump receipt
+    may <em>not</em> be the valid invoice. Our pipeline must know <strong>whose invoice it holds</strong> (station vs issuer).
+    Stream A's biggest legal risk.</p>
   </div>
 
   <h2><span class="n">2.3</span> Stream B — Professional-diesel excise refunds</h2>
-  <p>A partial refund of national diesel excise down to a "commercial diesel" floor. Universal eligibility: gross
-  vehicle weight <strong>≥ 7.5 t</strong>. Rates are volatile (quarterly/annual) and vary sharply by country — so
-  the platform must treat them as <em>live data</em>.</p>
-  <table>
-    <thead><tr><th>Country</th><th>Scheme</th><th class="num">Refund</th><th>Filing / frequency</th></tr></thead>
+  <ul>
+    <li><strong>What it is:</strong> a partial refund of national diesel excise, down to a lower "commercial diesel" floor.<sup class="cite"><a target="_blank" rel="noopener" href="https://www.cnr.fr/download/file/publications/CNR-%20Excise%20duties%20and%20mechanisms%20for%20RFT%20partial%20refunds%20on%20diesel%20in%20Europe%20-%20March%202025.pdf" title="CNR — EU excise refunds, Mar 2025">4</a></sup></li>
+    <li><strong>Who qualifies:</strong> trucks with gross vehicle weight <strong>≥ 7.5 t</strong> (universal across the schemes).</li>
+    <li><strong>Watch the rates:</strong> volatile (quarterly/annual) and vary sharply by country — the platform must treat them as <em>live data</em>.</li>
+  </ul>
+  <p class="small" style="margin-bottom:6px">Scoped to the lanes a <strong>Spanish international carrier</strong> actually
+  drives — not the full EU list:</p>
+  <table class="t-tight">
+    <thead><tr><th>Country</th><th>Scheme</th><th class="num">Refund</th><th>What it means for our pilot</th></tr></thead>
     <tbody>
-      <tr><td>France</td><td>Gazole professionnel (accise, ex-TICPE)</td><td class="num">15.56 €/hl</td><td>Electronic (DGFiP portal) · quarterly/semi-annual</td></tr>
-      <tr><td>Belgium</td><td>Diesel professionnel</td><td class="num">~19.3 €/hl</td><td>Douanes · quarterly · prior authorisation</td></tr>
-      <tr><td>Italy</td><td>Gasolio commerciale</td><td class="num">~21.4 €/hl</td><td>ADM software · quarterly · <b>Euro 5+ only</b></td></tr>
-      <tr><td>Spain</td><td>Gasóleo profesional</td><td class="num">4.9 €/hl</td><td>Diesel card · monthly · cap €2,450/veh · <b>auto-paid</b></td></tr>
-      <tr><td>Portugal</td><td>Gasóleo profissional</td><td class="num">variable</td><td>Relevant to ES↔PT lanes · rate needs verify</td></tr>
-      <tr><td>Ireland</td><td>Diesel Rebate Scheme</td><td class="num">sliding ≤~7.5 c/L</td><td>Revenue · quarterly</td></tr>
-      <tr><td>Slovenia</td><td>Commercial diesel</td><td class="num">~9.5 €/hl</td><td>Finančna uprava · periodic</td></tr>
-      <tr><td>Hungary</td><td>Commercial diesel</td><td class="num">~4.3 €/hl</td><td>NAV · quarterly</td></tr>
-      <tr><td>Croatia</td><td>Commercial diesel</td><td class="num">~7.6 €/hl</td><td>Customs · periodic</td></tr>
-      <tr><td>Romania</td><td>State-aid excise compensation</td><td class="num">~€0.08–0.13/L</td><td>ARR · quarterly (volatile)</td></tr>
+      <tr><td><strong>Spain</strong> <span class="muted">(home)</span></td><td>Gasóleo profesional<sup class="cite"><a target="_blank" rel="noopener" href="https://sede.agenciatributaria.gob.es/Sede/impuestos-especiales-medioambientales/devoluciones-gasoleo-profesional.html" title="AEAT — gasóleo profesional">6</a></sup></td><td class="num">4.9 €/hl</td><td>Already <b>auto-paid</b> via the diesel card → our <strong>trust hook</strong>, not the revenue.</td></tr>
+      <tr><td><strong>France</strong></td><td>Gazole professionnel<sup class="cite"><a target="_blank" rel="noopener" href="https://www.dashdoc.com/fr/blog/remboursement-ticpe" title="Dashdoc — remboursement TICPE">3</a></sup></td><td class="num">15.56 €/hl</td><td>Biggest refund; <b>ES→FR is a core lane</b> → real € we file for.</td></tr>
+      <tr><td>Portugal</td><td>Gasóleo profissional</td><td class="num">variable</td><td>ES↔PT lanes; rate needs verifying.</td></tr>
+      <tr><td>Other transit states</td><td>IT · BE · SI · HU · HR · RO</td><td class="num">~4–21 €/hl</td><td>Upside on longer routes; Italy is Euro 5+ only. Not the base case.</td></tr>
     </tbody>
   </table>
   <p class="tcap">No professional-diesel scheme in DE, NL, PL, AT, LU or Scandinavia → only VAT is recoverable there.
   <b>Best case</b>, a truck fuelling entirely in France (~35,000&nbsp;L/yr) recovers <b>€5,446</b> in excise; blended
-  across real mixed-EU routes the fleet <b>average is far lower (~€1,200/truck, see §3.2)</b> — excise is upside, not
-  the base case. <b>Shrinking pool:</b> Italy gates to Euro 5+ (excludes older tractors), France/Belgium rates are on a
-  legislated downward path, and the EU <b>Energy Taxation Directive</b> recast may end commercial-diesel carve-outs.</p>
+  across real mixed-EU routes the per-truck <b>average is far lower (~€1,200, see §3.2)</b> — excise is upside, not the
+  base case. <b>Shrinking pool:</b> Italy gates to Euro 5+, France/Belgium rates are on a legislated downward path, and
+  the EU <b>Energy Taxation Directive</b> recast may end commercial-diesel carve-outs.</p>
 
   <h2><span class="n">2.4</span> Stream C — Per-diem &amp; days-abroad income tax (driver-level)</h2>
-  <p>Tax-free daily allowances for meals and in-cab overnights reduce the driver's taxable income — and, in
-  Poland/Romania/Lithuania, the social-contribution base (a much bigger cash lever). It is a
-  <strong>count-the-days problem</strong>: the proof already lives in tachograph/GPS data.</p>
+  <p>Tax-free daily allowances for meals and in-cab overnights cut the driver's taxable income — and, in
+  Poland/Romania/Lithuania, the social-contribution base (a much bigger lever). It's a
+  <strong>count-the-days problem</strong>, and the proof already lives in tachograph/GPS data. <strong>For execution:
+  treat Stream C as a driver-level upsell, not the beachhead's core</strong> — its value hinges on whether the driver is
+  employed or a self-employed autónomo (the two cases below).</p>
   <table class="t-tight">
     <thead><tr><th>Country</th><th class="num">Domestic tax-free</th><th class="num">Abroad tax-free</th><th>Mechanism / note</th></tr></thead>
     <tbody>
@@ -146,15 +147,22 @@
   </table>
   <div class="callout"><span class="lbl">Worked example — Germany (employed driver)</span>
     <p>A driver with ~220 travel days recovers ~€7,680 in meal + overnight allowances vs the €1,230 default lump
-    sum → <strong>~€1,600–1,900 cash refund per year</strong>, recurring. In PL/RO/LT the contribution-base
+    sum<sup class="cite"><a target="_blank" rel="noopener" href="https://www.steuergo.de/en/texte/2025/621/travel_expenses" title="SteuerGo — German travel allowances">5</a></sup> → <strong>~€1,600–1,900 cash refund per year</strong>, recurring. In PL/RO/LT the contribution-base
     reduction can be worth several thousand € more.</p>
   </div>
-  <div class="callout warn"><span class="lbl">Critical — employee vs self-employed (autónomo)</span>
-    <p>The exemptions above apply to <strong>employed drivers</strong> (payroll). A <strong>self-employed autónomo</strong>
-    — our Spanish beachhead — cannot pay himself an exempt dieta; he deducts only limited meal costs (ES: €26.67 domestic /
-    €48.08 abroad, requiring <em>electronic payment at a hospitality establishment</em> — in-cab meals don't qualify).
-    So for an autónomo-first pilot, Stream C is a <strong>payroll-structuring product for carriers that employ drivers</strong>,
-    plus a modest autónomo deduction — not a large ex-post refund. Do not size the beachhead on it.</p>
+  <div class="cols">
+    <div class="callout good"><span class="lbl">Employed drivers (payroll) — where Stream C is a product</span>
+      <p>The exemptions above apply to <strong>employed drivers</strong>. For a carrier that employs drivers, structuring
+      tax-free meal + overnight allowances is a real, recurring lever (DE example: <strong>~€1,600–1,900 / driver / yr</strong>;
+      larger via the contribution base in PL/RO/LT). Here Stream C is a <strong>payroll-structuring product — sold to the
+      employer</strong>.</p>
+    </div>
+    <div class="callout warn"><span class="lbl">Self-employed autónomo — our beachhead (small lever)</span>
+      <p>A <strong>self-employed autónomo</strong> can't pay himself an exempt dieta — he deducts only limited meal costs
+      (ES: <strong>€26.67 domestic / €48.08 abroad</strong>, requiring <em>electronic payment at a hospitality venue</em>;
+      in-cab meals don't qualify). So for the autónomo-first pilot, Stream C is a <strong>modest deduction, not a big refund</strong>.
+      <strong>Don't size the beachhead on it.</strong></p>
+    </div>
   </div>
 
   <h2><span class="n">2.5</span> Why the money goes unclaimed — our wedge</h2>
@@ -178,12 +186,12 @@
   </div>
 
   <div class="sources"><b>Sources:</b>
-    <a href="https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX:32008L0009">EUR-Lex 2008/9/EC</a> ·
-    <a href="https://taxation-customs.ec.europa.eu/taxation/vat/vat-directive/vat-refunds_en">EC VAT refunds</a> ·
-    <a href="https://www.dashdoc.com/fr/blog/remboursement-ticpe">Dashdoc TICPE</a> ·
-    <a href="https://www.cnr.fr/download/file/publications/CNR-%20Excise%20duties%20and%20mechanisms%20for%20RFT%20partial%20refunds%20on%20diesel%20in%20Europe%20-%20March%202025.pdf">CNR excise Mar-2025</a> ·
-    <a href="https://www.steuergo.de/en/texte/2025/621/travel_expenses">SteuerGo DE allowances</a> ·
-    <a href="https://sede.agenciatributaria.gob.es/Sede/impuestos-especiales-medioambientales/devoluciones-gasoleo-profesional.html">AEAT gasóleo profesional</a>.
+    <span class="srcnum">1</span> <a target="_blank" rel="noopener" href="https://eur-lex.europa.eu/legal-content/EN/ALL/?uri=CELEX:32008L0009">EUR-Lex 2008/9/EC</a> ·
+    <span class="srcnum">2</span> <a target="_blank" rel="noopener" href="https://taxation-customs.ec.europa.eu/taxation/vat/vat-directive/vat-refunds_en">EC VAT refunds</a> ·
+    <span class="srcnum">3</span> <a target="_blank" rel="noopener" href="https://www.dashdoc.com/fr/blog/remboursement-ticpe">Dashdoc TICPE</a> ·
+    <span class="srcnum">4</span> <a target="_blank" rel="noopener" href="https://www.cnr.fr/download/file/publications/CNR-%20Excise%20duties%20and%20mechanisms%20for%20RFT%20partial%20refunds%20on%20diesel%20in%20Europe%20-%20March%202025.pdf">CNR excise Mar-2025</a> ·
+    <span class="srcnum">5</span> <a target="_blank" rel="noopener" href="https://www.steuergo.de/en/texte/2025/621/travel_expenses">SteuerGo DE allowances</a> ·
+    <span class="srcnum">6</span> <a target="_blank" rel="noopener" href="https://sede.agenciatributaria.gob.es/Sede/impuestos-especiales-medioambientales/devoluciones-gasoleo-profesional.html">AEAT gasóleo profesional</a>.
     <em>Excise rates change quarterly — verify at claim time. VAT thresholds are Art. 17 of Dir. 2008/9/EC (€400 sub-annual / €50 annual). PT/IE excise rates need verification before use.</em>
   </div>
 
