@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>6 · Product &amp; Tech Roadmap — TTR</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<nav class="topnav"><div class="inner">
+  <span class="brand"><span class="dot">T</span> TTR · Tax Recovery</span>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="01-executive-summary.html">1 · Summary</a>
+    <a href="02-opportunity.html">2 · Opportunity</a>
+    <a href="03-market.html">3 · Market</a>
+    <a href="04-competition.html">4 · Competition</a>
+    <a href="05-customer-gtm.html">5 · Customer &amp; GTM</a>
+    <a href="06-product.html" class="active">6 · Product</a>
+    <a href="07-risks-next.html">7 · Risks</a>
+    <a href="08-spain-pilot.html">8 · Spain Pilot</a>
+  </div>
+</div></nav>
+
+<div class="sheet">
+  <div class="doc-head">
+    <div class="sec">06 · Product &amp; Tech Roadmap</div>
+    <div class="proj">TTR · Transport Tax Recovery<br>Confidential · 13 Jul 2026</div>
+  </div>
+
+  <h1>Product &amp; Tech Roadmap</h1>
+  <p class="lead">Build fast, measure € recovered, fake the tax logic before you build it. POC → MVP → Platform,
+  one country flow end-to-end before fanning out.</p>
+
+  <div class="callout key"><span class="lbl">The one insight that shapes the build</span>
+    <p>OCR is a commodity. <strong>Reconciliation, invoice-validity, and the claim-readiness dashboard are the product.</strong>
+    Don't out-enterprise the enterprises — out-simplify them. Win with self-serve + no-win-no-fee + "just forward the photo."</p>
+  </div>
+
+  <h2><span class="n">6.1</span> Phased roadmap</h2>
+  <div class="phase ph-poc">
+    <div class="ph-head"><span class="lbl">POC · Wizard-of-Oz</span><span class="wk">Weeks 0–8</span></div>
+    <div class="ph-body">
+      <p><strong>Goal:</strong> prove drivers grant filing rights and hand you documents, extraction is good enough, and real recoverable € can be identified and filed. Build nothing a human + no-code can fake.</p>
+      <p class="small"><strong>Build (real):</strong> a WhatsApp/Telegram number + per-user forwarding email as the single ingest surface → Claude-vision first-pass OCR into Airtable.
+      <strong>Fake (concierge):</strong> a contracted tax expert verifies and files (or white-labels through an incumbent) while you own the customer.
+      <strong>Stack:</strong> Twilio WhatsApp · Postmark/Mailgun inbound · Claude vision · Airtable · Make/Zapier.</p>
+      <p class="small" style="margin:0"><strong>Success gates:</strong> ≥60% of onboarded drivers grant apoderamiento &amp; send a doc · ≥90% field accuracy on the 4 key fields · median <strong>€ recovery identified &amp; filed</strong> / driver &gt; 3× annual take-rate (cash lands months 4–8).</p>
+    </div>
+  </div>
+  <div class="phase ph-mvp">
+    <div class="ph-head"><span class="lbl">MVP · Self-serve + automated extraction</span><span class="wk">Months 2–5</span></div>
+    <div class="ph-body">
+      <p><strong>First flow to automate:</strong> foreign fuel VAT (standardised Dir. 2008/9/EC portal, pure document, no GPS). For Spain the endpoint is AEAT modelo 360.</p>
+      <p class="small"><strong>Build:</strong> camera-first PWA (no app-store gate) · dual-extractor reconcile + confidence score · Postgres data model · claim-readiness dashboard ("€X ready, €Y blocked — invoice missing VAT ID") · human-review console · <strong>success-fee billing via Stripe, charged only on recovered €</strong>.</p>
+      <p class="small" style="margin:0"><strong>Success gates:</strong> 100 paying carriers · auto-extract handles ≥70% no-touch · € recovered / active driver rising.</p>
+    </div>
+  </div>
+  <div class="phase ph-plat">
+    <div class="ph-head"><span class="lbl">PLATFORM · Scale &amp; automate filing</span><span class="wk">Months 6–18</span></div>
+    <div class="ph-body">
+      <p class="small" style="margin:0"><strong>Build:</strong> native mobile apps (Expo) · fuel-card + TMS integrations (clean data, zero OCR) · tachograph <code>.ddd</code> + GPS ingest for per-diem day-counting · multi-country rules engine (versioned config) · automated e-filing to national portals · white-label API for card issuers &amp; accountants.</p>
+    </div>
+  </div>
+
+  <h2><span class="n">6.2</span> MVP architecture</h2>
+  <figure><div class="diagram-wrap">
+  <svg viewBox="0 0 700 470" role="img" aria-label="MVP architecture pipeline">
+    <defs><marker id="arw" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#6a778e"/></marker></defs>
+    <style>
+      .bx{fill:#f7f9fc;stroke:#1e3a5f;stroke-width:1.4}
+      .bt{font-family:sans-serif;font-size:12px;font-weight:700;fill:#16202e}
+      .bs{font-family:sans-serif;font-size:10px;fill:#6a778e}
+      .fl{stroke:#6a778e;stroke-width:1.6;fill:none;marker-end:url(#arw)}
+      .accent{fill:#e6f2f0;stroke:#0f766e}
+    </style>
+    <!-- ingest -->
+    <rect class="bx" x="20" y="20" width="200" height="60" rx="8"/>
+    <text class="bt" x="34" y="44">Ingest surfaces</text>
+    <text class="bs" x="34" y="62">WhatsApp · Email · PWA upload</text>
+    <line class="fl" x1="220" y1="50" x2="270" y2="50"/>
+    <!-- ingestion api -->
+    <rect class="bx" x="270" y="20" width="180" height="60" rx="8"/>
+    <text class="bt" x="284" y="44">Ingestion API</text>
+    <text class="bs" x="284" y="62">encrypted object store (R2)</text>
+    <line class="fl" x1="360" y1="80" x2="360" y2="110"/>
+    <!-- extraction -->
+    <rect class="bx accent" x="200" y="110" width="300" height="76" rx="8"/>
+    <text class="bt" x="216" y="134">Extraction pipeline</text>
+    <text class="bs" x="216" y="152">Claude vision ┐</text>
+    <text class="bs" x="216" y="167">Veryfi / Mindee ┘ → reconcile → confidence</text>
+    <line class="fl" x1="350" y1="186" x2="350" y2="216"/>
+    <!-- data model -->
+    <rect class="bx" x="180" y="216" width="340" height="70" rx="8"/>
+    <text class="bt" x="196" y="240">Structured data model — Postgres (Supabase)</text>
+    <text class="bs" x="196" y="258">Invoice(country, VAT id, gross, vat, litres) ·</text>
+    <text class="bs" x="196" y="273">Driver(nationality, days_abroad[]) · Claim(type, €value)</text>
+    <line class="fl" x1="350" y1="286" x2="350" y2="316"/>
+    <!-- rules engine -->
+    <rect class="bx accent" x="200" y="316" width="300" height="60" rx="8"/>
+    <text class="bt" x="216" y="340">Rules &amp; validity engine</text>
+    <text class="bs" x="216" y="358">per-country recoverability · VIES check · gross=net+VAT</text>
+    <!-- branch: dashboard + review -->
+    <line class="fl" x1="240" y1="376" x2="160" y2="406"/>
+    <line class="fl" x1="460" y1="376" x2="540" y2="406"/>
+    <rect class="bx" x="40" y="406" width="240" height="52" rx="8"/>
+    <text class="bt" x="54" y="428">Claim-readiness dashboard</text>
+    <text class="bs" x="54" y="446">"€X ready · €Y blocked"</text>
+    <rect class="bx" x="420" y="406" width="250" height="52" rx="8"/>
+    <text class="bt" x="434" y="428">Human review → Claim assembler</text>
+    <text class="bs" x="434" y="446">low-confidence fix · export packet · Stripe fee</text>
+  </svg></div>
+  <figcaption>Ingestion is fungible; the reconcile + confidence + rules layer is the moat. Filing stays human-in-the-loop until volume justifies portal integration.</figcaption>
+  </figure>
+
+  <h2><span class="n">6.3</span> Core technical challenges</h2>
+  <table class="t-tight">
+    <thead><tr><th>Challenge</th><th>Approach</th></tr></thead>
+    <tbody>
+      <tr><td>Multilingual messy-photo OCR</td><td>Dual-extractor (Claude vision + Veryfi/Mindee) + reconcile + confidence gating; human review below threshold. Bias to Claude's <strong>low hallucination</strong> — a wrong VAT number kills a claim.</td></tr>
+      <tr><td>Per-country tax rules</td><td>Versioned config-driven engine (recoverability, caps, blocked categories, excise rates) — never hardcode.</td></tr>
+      <tr><td>Invoice validity</td><td>Automated checks: valid supplier VAT ID (VIES), required fields, gross = net + VAT, date within claim window.</td></tr>
+      <tr><td>Day-counting (per-diem)</td><td>Tachograph <code>.ddd</code> + GPS to count <em>actual</em> nights; store evidence for audit (German courts require nights actually in-cab).</td></tr>
+      <tr><td>GDPR / privacy</td><td>EU-region hosting, encryption at rest, DPA with the LLM vendor (or self-host OCR for PII), consent + retention/deletion, audit log.</td></tr>
+      <tr><td>Fraud / accuracy</td><td>Confidence thresholds, dedup (same receipt twice), anomaly flags (impossible litres/dates), mandatory human sign-off before filing.</td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="n">6.4</span> Recommended stack &amp; iteration principles</h2>
+  <div class="cols">
+    <div>
+      <h3>Stack</h3>
+      <p class="small">Supabase (Postgres + auth + storage, EU) · Claude API (extraction + agentic review) · Veryfi/Mindee cross-check · Next PWA → Expo mobile · Twilio WhatsApp + Postmark/Mailgun inbound · Stripe (success-fee) · Temporal/job queue for the extract→validate→assemble pipeline · Cloudflare R2 for docs.</p>
+    </div>
+    <div>
+      <h3>Fast-iteration principles</h3>
+      <ol class="small" style="margin:0">
+        <li>Measure <strong>€ recovered</strong>, not documents processed.</li>
+        <li>No-win-no-fee from day one.</li>
+        <li>Fake the tax logic (human in Airtable) before building the rules engine.</li>
+        <li>OCR is a commodity; reconciliation is the product.</li>
+        <li>One country flow end-to-end until € flows — then fan out.</li>
+        <li>Every rejected claim feeds a rule; every human fix tunes a threshold.</li>
+      </ol>
+    </div>
+  </div>
+
+  <h2><span class="n">6.5</span> Roadmap at a glance</h2>
+  <table class="t-tight">
+    <thead><tr><th>Phase</th><th>Weeks</th><th>Scope</th><th>Success metric</th></tr></thead>
+    <tbody>
+      <tr><td><span class="pill" style="background:#e6f2f0;color:#0f766e">POC</span></td><td>0–8</td><td>WhatsApp/email ingest · LLM OCR · human verifies &amp; files</td><td>≥60% grant rights + send docs · ≥90% accuracy · € identified/filed ≥ 3× take-rate</td></tr>
+      <tr><td><span class="pill navy">MVP</span></td><td>8–20</td><td>Self-serve PWA · dual-extractor · dashboard · Stripe fee · <strong>foreign-VAT flow</strong></td><td>100 paying carriers · ≥70% no-touch extraction</td></tr>
+      <tr><td><span class="pill gray">Platform</span></td><td>24–72</td><td>Mobile apps · fuel-card/TMS + tachograph · multi-country engine · auto e-filing · white-label</td><td>Multi-country live · per-diem auto day-count · partner revenue</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sources"><b>Sources:</b>
+    <a href="https://www.koncile.ai/en/ressources/claude-gpt-or-gemini-which-is-the-best-llm-for-invoice-extraction">Koncile LLM invoice extraction</a> ·
+    <a href="https://www.mindee.com/blog/leading-ocr-api-solutions">Mindee OCR</a> ·
+    <a href="https://www.twilio.com/en-us/whatsapp/pricing">Twilio WhatsApp pricing</a> ·
+    <a href="https://taxation-customs.ec.europa.eu/taxation/vat/vat-directive/vat-refunds_en">EC VAT refunds</a> ·
+    <a href="https://www.n2f.com/blog/en/per-diem-allowances-verpflegungsmehraufwand-2026/">n2f per-diem 2026</a>.
+  </div>
+
+  <div class="pager">
+    <a href="05-customer-gtm.html"><span class="d">Previous</span><span class="t">← 5 · Customer &amp; GTM</span></a>
+    <a class="next" href="07-risks-next.html"><span class="d">Next</span><span class="t">7 · Risks &amp; Recommendations →</span></a>
+  </div>
+</div>
+
+<div class="docfoot"><span>TTR · Confidential</span><span>06 · Product &amp; Tech Roadmap</span></div>
+</body>
+</html>

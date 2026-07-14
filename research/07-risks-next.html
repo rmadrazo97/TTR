@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>7 · Risks &amp; Recommendations — TTR</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<nav class="topnav"><div class="inner">
+  <span class="brand"><span class="dot">T</span> TTR · Tax Recovery</span>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="01-executive-summary.html">1 · Summary</a>
+    <a href="02-opportunity.html">2 · Opportunity</a>
+    <a href="03-market.html">3 · Market</a>
+    <a href="04-competition.html">4 · Competition</a>
+    <a href="05-customer-gtm.html">5 · Customer &amp; GTM</a>
+    <a href="06-product.html">6 · Product</a>
+    <a href="07-risks-next.html" class="active">7 · Risks</a>
+    <a href="08-spain-pilot.html">8 · Spain Pilot</a>
+  </div>
+</div></nav>
+
+<div class="sheet">
+  <div class="doc-head">
+    <div class="sec">07 · Risks &amp; Recommendations</div>
+    <div class="proj">TTR · Transport Tax Recovery<br>Confidential · 13 Jul 2026</div>
+  </div>
+
+  <h1>Risks &amp; Recommendations</h1>
+  <p class="lead">The opportunity is real and the lane is open. The risks are concentrated in two soft numbers and
+  a handful of regulatory realities — all testable in 90 days.</p>
+
+  <h2><span class="n">7.1</span> Key risks &amp; mitigations</h2>
+  <table class="t-tight">
+    <thead><tr><th>Risk</th><th>Sev.</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Unit economics soft</strong> — €/truck, fee %, CAC &amp; cost-to-serve are estimates, not published</td><td><span class="pill bad">High</span></td><td>Pilot measures € identified/filed, cost-to-serve &amp; willingness to pay before any durable build</td></tr>
+      <tr><td><strong>Eligibility floors</strong> — ≥7.5t excise, VAT registration, €50–400 minimums exclude the smallest</td><td><span class="pill amber">Med</span></td><td>Validate per country; target the ≥7.5t international segment first, where value is real</td></tr>
+      <tr><td><strong>Data access</strong> — fuel-card majors control clean transaction data</td><td><span class="pill amber">Med</span></td><td>OCR path removes dependence; pursue a card API/partnership in parallel</td></tr>
+      <tr><td><strong>Pre-financing = working capital</strong> — fronting refunds the state repays in 4–18 months is a lending / credit-risk business</td><td><span class="pill bad">High</span></td><td>Partner with a refund-factoring provider (Eurowag/Factris model); defer pre-financing until after POC</td></tr>
+      <tr><td><strong>Extraction accuracy on money docs</strong> — a wrong VAT ID kills a claim</td><td><span class="pill amber">Med</span></td><td>Dual-extractor reconcile + confidence gating + mandatory human sign-off</td></tr>
+      <tr><td><strong>Per-diem being legislated down</strong> (Mobility Package)</td><td><span class="pill amber">Med</span></td><td>Anchor on fuel VAT + excise; treat per-diem as upsell, not core</td></tr>
+      <tr><td><strong>Clawback &amp; representative liability</strong> — a rejected/audited claim after we've booked a fee; joint liability of the filer for penalties/interest</td><td><span class="pill bad">High</span></td><td>Fee only on cash received; reserve for clawbacks; E&amp;O insurance; conservative validity gating; per-country liability map</td></tr>
+      <tr><td><strong>Fraud magnet</strong> — easy bulk receipt upload invites duplicate/forged/over-litre claims; AEAT could flag TTR as a systemic bad filer</td><td><span class="pill bad">High</span></td><td>KYB, cross-customer dedup, anomaly detection (litres&gt;tank), human sign-off, fraud-loss provision</td></tr>
+      <tr><td><strong>Licensing by function/country</strong> — DE StBerG reserves income-tax filing; PSD2/AML if funds route through us or we pre-finance</td><td><span class="pill amber">Med</span></td><td>ES apoderamiento/colaborador social; avoid touching client money early; licence map before each new country</td></tr>
+      <tr><td><strong>Fuel-card VAT recharacterisation</strong> (CJEU Vega Int'l) — card receipt may not be a valid invoice</td><td><span class="pill amber">Med</span></td><td>Capture issuer invoice; know whose supply it is before filing (see §2.2)</td></tr>
+      <tr><td><strong>Regulated-advice / gestor loyalty</strong></td><td><span class="pill amber">Med</span></td><td>Partner with licensed asesores; own the customer, white-label filing; gestor referral rev-share</td></tr>
+      <tr><td><strong>Incumbent response</strong> — FastVAT/Eurowag/ES tax-software add self-serve</td><td><span class="pill gray">Low-Med</span></td><td>Move fast on community distribution + apoderamiento lock-in + the orphaned excise/dietas bundle (see §4.5)</td></tr>
+      <tr><td><strong>GDPR / data privacy</strong> — receipts &amp; tacho data are personal data</td><td><span class="pill gray">Low-Med</span></td><td>EU hosting, encryption, DPA, retention/deletion, audit log from day one</td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="n">7.2</span> Regulatory constraints to design around</h2>
+  <div class="cols">
+    <ul>
+      <li><strong>Hard 30 Sep VAT deadline</strong> — miss it and the year's VAT is lost. "We handle the deadline" is both a feature and an obligation.</li>
+      <li><strong>Invoice-validity rules</strong> — simplified/card-slip receipts are rejected; the platform must flag and fix at ingestion.</li>
+      <li><strong>Excise rates are volatile</strong> (quarterly/annual) and country-specific — must be live config, never hardcoded.</li>
+    </ul>
+    <ul>
+      <li><strong>Per-diem eligibility gates</strong> — salary thresholds (PL, LT), 3× cap (RO), nights-in-cab proof (DE) — high compliance surface.</li>
+      <li><strong>Mobility Package</strong> — subsistence allowances don't count toward host minimum wage; A1 form preserves home-country optimization.</li>
+      <li><strong>Licensed filing</strong> in several states — structure as tech + licensed-agent partnership, not unlicensed advice.</li>
+    </ul>
+  </div>
+
+  <h2><span class="n">7.3</span> The 90-day plan</h2>
+  <div class="cols-3">
+    <div class="phase ph-poc"><div class="ph-head"><span class="lbl">Days 0–30</span><span class="wk">Validate demand</span></div>
+      <div class="ph-body"><ul class="small" style="margin:0;padding-left:16px">
+        <li>Recruit 25–40 Spanish int'l carriers via Fenadismer + FB</li>
+        <li>Stand up WhatsApp + email ingest + Airtable</li>
+        <li>Contract one licensed asesor for filing + apoderamiento flow</li>
+        <li>Measure: do they grant filing rights &amp; send docs?</li>
+      </ul></div></div>
+    <div class="phase ph-mvp"><div class="ph-head"><span class="lbl">Days 30–60</span><span class="wk">Validate €</span></div>
+      <div class="ph-body"><ul class="small" style="margin:0;padding-left:16px">
+        <li>Run concierge claims end-to-end; file modelo 360 + gasóleo enrolment</li>
+        <li>Confirm <strong>€ recovery identified &amp; filed</strong> / truck + extraction accuracy</li>
+        <li>(Cash refunds land at month 4–8 — track filed, not paid)</li>
+        <li>Test willingness to pay a ~15% success fee</li>
+      </ul></div></div>
+    <div class="phase ph-plat"><div class="ph-head"><span class="lbl">Days 60–90</span><span class="wk">Decide &amp; build</span></div>
+      <div class="ph-body"><ul class="small" style="margin:0;padding-left:16px">
+        <li>Go/no-go on the two load-bearing numbers</li>
+        <li>If go: start MVP (PWA + foreign-VAT flow)</li>
+        <li>Open a fuel-card partnership conversation</li>
+        <li>Raise on POC evidence, not slides</li>
+      </ul></div></div>
+  </div>
+
+  <h2><span class="n">7.4</span> Open questions to resolve before scaling</h2>
+  <ol>
+    <li>What is the <strong>real success-fee</strong> owner-operators will accept — and is our blended 15% defensible against agents at 5–12% who also pre-finance?</li>
+    <li>What share of the ~6.2M EU trucks are genuinely <strong>international-active</strong> (the TAM's load-bearing input)?</li>
+    <li>Will a fuel-card major <strong>expose transaction data</strong> via API/partnership — or must we stay OCR-only?</li>
+    <li>What is the <strong>licensing / liability</strong> structure per country for filing on a customer's behalf?</li>
+    <li>Does the <strong>gasóleo enrolment hook</strong> convert Spanish owner-operators as cheaply as the community channels imply?</li>
+  </ol>
+
+  <h2><span class="n">7.5</span> The deal — team, ask &amp; milestones</h2>
+  <div class="callout gold"><span class="lbl">Founders to complete before the raise</span>
+    <p><strong>Team / why-us:</strong> the one thing an investor reads first — articulate the founders' unfair advantage
+    (transport/tax domain, Spain distribution, or AI/document-extraction depth) and why <em>this</em> team closes the lane
+    before Eurowag does. <strong>The ask &amp; use of funds:</strong> size the pre-seed/seed to reach the MVP milestones below
+    (team, one licensed asesor partner, ~12–18 months runway given thin year-one revenue). These are placeholders — fill with real numbers.</p>
+  </div>
+  <table class="t-tight">
+    <thead><tr><th>Horizon</th><th>Milestone</th><th>KPI</th></tr></thead>
+    <tbody>
+      <tr><td>Month 2</td><td>Concierge pilot complete (Spain)</td><td>25–40 carriers · ≥€4k/truck identified &amp; filed · WTP validated</td></tr>
+      <tr><td>Month 5</td><td>MVP live — self-serve PWA + modelo 360 flow</td><td>100 paying carriers · ≥70% no-touch extraction</td></tr>
+      <tr><td>Month 9</td><td>Fenadismer / fuel-card partnership + excise + dietas live</td><td>€X ARR run-rate · CAC &lt; contribution · churn baseline</td></tr>
+      <tr><td>Month 18</td><td>Country #2 (Poland) + platform integrations</td><td>~1,000 carriers · multi-country rules engine · path to €28M SOM visible</td></tr>
+    </tbody>
+  </table>
+  <p class="tcap"><b>Wedge → platform vision:</b> tax recovery is the wedge; the data asset (fuel, routes, filed claims,
+  apoderamientos) opens embedded finance for carriers — factoring/pre-financing, fuel &amp; toll optimisation, insurance.
+  <b>Comparables/acquirers:</b> Taxfix (consumer tax UX), Eurowag (listed mobility platform), VAT IT / Blue Dot (VAT-tech M&amp;A) — the fuel-card majors are the obvious strategic buyers.</p>
+
+  <div class="callout good"><span class="lbl">Final recommendation</span>
+    <p><strong>Proceed to an 8-week concierge pilot in Spain.</strong> The market is large (~€1.6B fee TAM), the segment is
+    genuinely underserved, the timing (national e-invoicing mandates) is favourable, and the whole thesis rests on two
+    numbers a cheap pilot can settle. Anchor on foreign VAT + excise, use gasóleo enrolment as the trust hook, distribute
+    through trucker communities + Fenadismer, and price no-win-no-fee. Build nothing durable until <strong>€ recovery is
+    identified and claims are filed</strong> for real drivers (cash lands 4–8 months later — the pilot proves the funnel, not the payout).</p>
+  </div>
+
+  <div class="pager">
+    <a href="06-product.html"><span class="d">Previous</span><span class="t">← 6 · Product &amp; Tech Roadmap</span></a>
+    <a class="next" href="08-spain-pilot.html"><span class="d">Next</span><span class="t">8 · Spain Pilot Plan →</span></a>
+  </div>
+</div>
+
+<div class="docfoot"><span>TTR · Confidential</span><span>07 · Risks &amp; Recommendations</span></div>
+</body>
+</html>

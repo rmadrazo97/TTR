@@ -37,3 +37,7 @@ yarn-error.log*
 coverage/
 .pytest_cache/
 .nyc_output/
+
+# Preview / build artifacts
+.playwright-mcp/
+TTR-research-dossier.zip
