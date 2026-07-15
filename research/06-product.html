@@ -39,107 +39,153 @@
   </div>
 
   <h2><span class="n">6.1</span> Phased roadmap</h2>
-  <div class="phase ph-poc">
-    <div class="ph-head"><span class="lbl">POC · Wizard-of-Oz</span><span class="wk">Weeks 0–8</span></div>
+  <p class="small" style="margin:-4px 0 10px;color:var(--muted)">Each phase expands — the POC is the one that matters now.</p>
+
+  <details class="phase ph-poc" open>
+    <summary class="ph-head"><span class="lbl">POC · Concierge pilot</span><span class="wk">Weeks 0–8</span></summary>
     <div class="ph-body">
-      <p><strong>Goal:</strong> prove drivers grant filing rights and hand you documents, extraction is good enough, and real recoverable € can be identified and filed. Build nothing a human + no-code can fake.</p>
-      <p class="small"><strong>Build (real):</strong> a WhatsApp/Telegram number + per-user forwarding email as the single ingest surface → Claude-vision first-pass OCR into Airtable.
-      <strong>Fake (concierge):</strong> a contracted tax expert verifies and files (or white-labels through an incumbent) while you own the customer.
-      <strong>Stack:</strong> Twilio WhatsApp · Postmark/Mailgun inbound · Claude vision · Airtable · Make/Zapier.</p>
+      <p><strong>Goal:</strong> prove drivers grant filing rights and hand you documents, extraction is good enough, and real recoverable € can be identified and filed. <strong>Build nothing a human + no-code can fake.</strong></p>
+      <figure><div class="diagram-wrap">
+      <svg viewBox="0 0 700 190" role="img" aria-label="POC architecture: four pieces, no custom backend">
+        <defs><marker id="poc-arw" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill="#77839a"/></marker></defs>
+        <text x="20" y="24" font-size="13" font-weight="800" fill="#181f2a">Four pieces, no custom backend — live in days</text>
+        <rect x="16" y="44" width="152" height="84" rx="10" fill="#fff" stroke="#d3d8e4" stroke-width="1.2"/>
+        <text x="30" y="68" font-size="12" font-weight="700" fill="#17324f">1 · Driver sends</text>
+        <text x="30" y="86" font-size="10" fill="#77839a">photo → WhatsApp, or</text>
+        <text x="30" y="100" font-size="10" fill="#77839a">forwards the e-invoice</text>
+        <text x="30" y="116" font-size="9.5" fill="#94a0b4">(Twilio · Postmark)</text>
+        <line x1="168" y1="86" x2="186" y2="86" stroke="#77839a" stroke-width="1.6" marker-end="url(#poc-arw)"/>
+        <rect x="188" y="44" width="152" height="84" rx="10" fill="#e4f2ef" stroke="#0d7c6c" stroke-width="1.4"/>
+        <text x="202" y="68" font-size="12" font-weight="700" fill="#0a5f53">2 · AI reads it</text>
+        <text x="202" y="86" font-size="10" fill="#77839a">one LLM-vision call →</text>
+        <text x="202" y="100" font-size="10" fill="#77839a">fields + confidence</text>
+        <text x="202" y="116" font-size="9.5" fill="#94a0b4">(e.g. Claude vision)</text>
+        <line x1="340" y1="86" x2="358" y2="86" stroke="#77839a" stroke-width="1.6" marker-end="url(#poc-arw)"/>
+        <rect x="360" y="44" width="152" height="84" rx="10" fill="#fff" stroke="#d3d8e4" stroke-width="1.2"/>
+        <text x="374" y="68" font-size="12" font-weight="700" fill="#17324f">3 · Admin console</text>
+        <text x="374" y="86" font-size="10" fill="#77839a">simple CRM to manage</text>
+        <text x="374" y="100" font-size="10" fill="#77839a">users &amp; their filings</text>
+        <text x="374" y="116" font-size="9.5" fill="#94a0b4">(no-code / low-code)</text>
+        <line x1="512" y1="86" x2="530" y2="86" stroke="#77839a" stroke-width="1.6" marker-end="url(#poc-arw)"/>
+        <rect x="532" y="44" width="152" height="84" rx="10" fill="#eaf0f7" stroke="#17324f" stroke-width="1.4"/>
+        <text x="546" y="68" font-size="12" font-weight="700" fill="#17324f">4 · Human files</text>
+        <text x="546" y="86" font-size="10" fill="#77839a">concierge tax expert</text>
+        <text x="546" y="100" font-size="10" fill="#77839a">verifies &amp; files the claim</text>
+        <text x="546" y="116" font-size="9.5" fill="#94a0b4">€ tracked per driver</text>
+        <text x="20" y="156" font-size="9.5" font-style="italic" fill="#94a0b4">Only custom code: two webhooks. Everything else is configured, not built — any piece swaps out later without rework.</text>
+        <text x="20" y="172" font-size="9.5" font-style="italic" fill="#94a0b4">Instrumented for the three gates: docs sent · extraction accuracy · € identified &amp; filed.</text>
+      </svg></div>
+      <figcaption>Deliberately minimal — prove drivers send documents and real € exists before writing product code.</figcaption>
+      </figure>
+      <p class="small"><strong>Build (real):</strong> a WhatsApp/Telegram number + per-user forwarding email as the single ingest surface → LLM-vision first-pass OCR into a simple admin console / CRM.
+      <strong>Concierge:</strong> a contracted tax expert verifies and files (or white-labels through an incumbent) while you own the customer.
+      <strong>Stack:</strong> Twilio WhatsApp · Postmark/Mailgun inbound · LLM vision (e.g. Claude) · no-code admin console/CRM · Make/Zapier.</p>
       <p class="small" style="margin:0"><strong>Success gates:</strong> ≥60% of onboarded drivers grant apoderamiento &amp; send a doc · ≥90% field accuracy on the 4 key fields · median <strong>€ recovery identified &amp; filed</strong> / driver &gt; 3× annual take-rate (cash lands months 4–8).</p>
     </div>
-  </div>
-  <div class="phase ph-mvp">
-    <div class="ph-head"><span class="lbl">MVP · Self-serve + automated extraction</span><span class="wk">Months 2–5</span></div>
+  </details>
+
+  <details class="phase ph-mvp" open>
+    <summary class="ph-head"><span class="lbl">MVP · Self-serve + automated extraction</span><span class="wk">Months 2–5</span></summary>
     <div class="ph-body">
       <p><strong>First flow to automate:</strong> foreign fuel VAT (standardised Dir. 2008/9/EC portal, pure document, no GPS). For Spain the endpoint is AEAT modelo 360.</p>
       <p class="small"><strong>Build:</strong> camera-first PWA (no app-store gate) · dual-extractor reconcile + confidence score · Postgres data model · claim-readiness dashboard ("€X ready, €Y blocked — invoice missing VAT ID") · human-review console · <strong>success-fee billing via Stripe, charged only on recovered €</strong>.</p>
+      <figure><div class="diagram-wrap">
+      <svg viewBox="0 0 700 470" role="img" aria-label="MVP architecture pipeline">
+        <defs><marker id="arw" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 Z" fill="#77839a"/></marker></defs>
+        <style>
+          .bx{fill:#f7f9fc;stroke:#d3d8e4;stroke-width:1.2}
+          .bt{font-size:12px;font-weight:700;fill:#17324f}
+          .bs{font-size:10px;fill:#77839a}
+          .fl{stroke:#77839a;stroke-width:1.6;fill:none;marker-end:url(#arw)}
+          .accent{fill:#e4f2ef;stroke:#0d7c6c}
+        </style>
+        <rect class="bx" x="20" y="20" width="200" height="60" rx="8"/>
+        <text class="bt" x="34" y="44">Ingest surfaces</text>
+        <text class="bs" x="34" y="62">WhatsApp · Email · PWA upload</text>
+        <line class="fl" x1="220" y1="50" x2="270" y2="50"/>
+        <rect class="bx" x="270" y="20" width="180" height="60" rx="8"/>
+        <text class="bt" x="284" y="44">Ingestion API</text>
+        <text class="bs" x="284" y="62">encrypted object store (R2)</text>
+        <line class="fl" x1="360" y1="80" x2="360" y2="110"/>
+        <rect class="bx accent" x="200" y="110" width="300" height="76" rx="8"/>
+        <text class="bt" x="216" y="134">Extraction pipeline</text>
+        <text class="bs" x="216" y="152">LLM vision ┐</text>
+        <text class="bs" x="216" y="167">Veryfi / Mindee ┘ → reconcile → confidence</text>
+        <line class="fl" x1="350" y1="186" x2="350" y2="216"/>
+        <rect class="bx" x="180" y="216" width="340" height="70" rx="8"/>
+        <text class="bt" x="196" y="240">Structured data model — Postgres (Supabase)</text>
+        <text class="bs" x="196" y="258">Invoice(country, VAT id, gross, vat, litres) ·</text>
+        <text class="bs" x="196" y="273">Driver(nationality, days_abroad[]) · Claim(type, €value)</text>
+        <line class="fl" x1="350" y1="286" x2="350" y2="316"/>
+        <rect class="bx accent" x="200" y="316" width="300" height="60" rx="8"/>
+        <text class="bt" x="216" y="340">Rules &amp; validity engine</text>
+        <text class="bs" x="216" y="358">per-country recoverability · VIES check · gross=net+VAT</text>
+        <line class="fl" x1="240" y1="376" x2="160" y2="406"/>
+        <line class="fl" x1="460" y1="376" x2="540" y2="406"/>
+        <rect class="bx" x="40" y="406" width="240" height="52" rx="8"/>
+        <text class="bt" x="54" y="428">Claim-readiness dashboard</text>
+        <text class="bs" x="54" y="446">"€X ready · €Y blocked"</text>
+        <rect class="bx" x="420" y="406" width="250" height="52" rx="8"/>
+        <text class="bt" x="434" y="428">Human review → Claim assembler</text>
+        <text class="bs" x="434" y="446">low-confidence fix · export packet · Stripe fee</text>
+      </svg></div>
+      <figcaption>Ingestion is fungible; the reconcile + confidence + rules layer is the moat. Filing stays human-in-the-loop until volume justifies portal integration.</figcaption>
+      </figure>
       <p class="small" style="margin:0"><strong>Success gates:</strong> 100 paying carriers · auto-extract handles ≥70% no-touch · € recovered / active driver rising.</p>
     </div>
-  </div>
-  <div class="phase ph-plat">
-    <div class="ph-head"><span class="lbl">PLATFORM · Scale &amp; automate filing</span><span class="wk">Months 6–18</span></div>
+  </details>
+
+  <details class="phase ph-plat" open>
+    <summary class="ph-head"><span class="lbl">PLATFORM · Scale &amp; automate filing</span><span class="wk">Months 6–18</span></summary>
     <div class="ph-body">
-      <p class="small" style="margin:0"><strong>Build:</strong> native mobile apps (Expo) · fuel-card + TMS integrations (clean data, zero OCR) · tachograph <code>.ddd</code> + GPS ingest for per-diem day-counting · multi-country rules engine (versioned config) · automated e-filing to national portals · white-label API for card issuers &amp; accountants.</p>
+      <ul class="small" style="margin:0 0 8px">
+        <li>Native mobile apps (Expo)</li>
+        <li>Fuel-card + TMS integrations — clean data, zero OCR</li>
+        <li>Tachograph <code>.ddd</code> + GPS ingest → per-diem day-counting</li>
+        <li>Multi-country rules engine (versioned config)</li>
+        <li>Automated e-filing — AEAT web-service / file submission (modelo 360, gasóleo census) + apoderamiento management at scale</li>
+        <li>White-label API for card issuers &amp; accountants</li>
+      </ul>
+      <p class="small" style="margin:0"><em>No architecture diagram on purpose — the platform's shape will be decided by what the MVP data model proves, not committed to now.</em></p>
     </div>
+  </details>
+
+  <div class="callout key"><span class="lbl">Filing &amp; authorization — how claims actually reach Hacienda</span>
+    <ul class="small" style="margin:0">
+      <li><strong>Authorization (the onboarding gate):</strong> register TTR as a <strong>colaborador social</strong> to file on clients' behalf, and/or collect per-customer <strong>apoderamientos</strong> via AEAT's <em>Registro de Apoderamientos</em> (REGAPO) — the customer grants it online with Cl@ve / certificate. The apoderamiento grant flow is itself a product surface to automate.</li>
+      <li><strong>Submission (yes, there's an API):</strong> modelo 360 is filed electronically by <strong>presentación mediante fichero</strong> (upload a generated file) or <strong>AEAT web services</strong> (SOAP, certificate-authenticated), with a preproduction sandbox to build against.</li>
+      <li><strong>Maturity:</strong> POC/MVP file via colaboración social with human sign-off → Platform <strong>auto-submits by web service</strong> and manages apoderamientos at scale.</li>
+    </ul>
   </div>
 
-  <h2><span class="n">6.2</span> MVP architecture</h2>
-  <figure><div class="diagram-wrap">
-  <svg viewBox="0 0 700 470" role="img" aria-label="MVP architecture pipeline">
-    <defs><marker id="arw" markerWidth="9" markerHeight="9" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 Z" fill="#6a778e"/></marker></defs>
-    <style>
-      .bx{fill:#f7f9fc;stroke:#1e3a5f;stroke-width:1.4}
-      .bt{font-family:sans-serif;font-size:12px;font-weight:700;fill:#16202e}
-      .bs{font-family:sans-serif;font-size:10px;fill:#6a778e}
-      .fl{stroke:#6a778e;stroke-width:1.6;fill:none;marker-end:url(#arw)}
-      .accent{fill:#e6f2f0;stroke:#0f766e}
-    </style>
-    <!-- ingest -->
-    <rect class="bx" x="20" y="20" width="200" height="60" rx="8"/>
-    <text class="bt" x="34" y="44">Ingest surfaces</text>
-    <text class="bs" x="34" y="62">WhatsApp · Email · PWA upload</text>
-    <line class="fl" x1="220" y1="50" x2="270" y2="50"/>
-    <!-- ingestion api -->
-    <rect class="bx" x="270" y="20" width="180" height="60" rx="8"/>
-    <text class="bt" x="284" y="44">Ingestion API</text>
-    <text class="bs" x="284" y="62">encrypted object store (R2)</text>
-    <line class="fl" x1="360" y1="80" x2="360" y2="110"/>
-    <!-- extraction -->
-    <rect class="bx accent" x="200" y="110" width="300" height="76" rx="8"/>
-    <text class="bt" x="216" y="134">Extraction pipeline</text>
-    <text class="bs" x="216" y="152">Claude vision ┐</text>
-    <text class="bs" x="216" y="167">Veryfi / Mindee ┘ → reconcile → confidence</text>
-    <line class="fl" x1="350" y1="186" x2="350" y2="216"/>
-    <!-- data model -->
-    <rect class="bx" x="180" y="216" width="340" height="70" rx="8"/>
-    <text class="bt" x="196" y="240">Structured data model — Postgres (Supabase)</text>
-    <text class="bs" x="196" y="258">Invoice(country, VAT id, gross, vat, litres) ·</text>
-    <text class="bs" x="196" y="273">Driver(nationality, days_abroad[]) · Claim(type, €value)</text>
-    <line class="fl" x1="350" y1="286" x2="350" y2="316"/>
-    <!-- rules engine -->
-    <rect class="bx accent" x="200" y="316" width="300" height="60" rx="8"/>
-    <text class="bt" x="216" y="340">Rules &amp; validity engine</text>
-    <text class="bs" x="216" y="358">per-country recoverability · VIES check · gross=net+VAT</text>
-    <!-- branch: dashboard + review -->
-    <line class="fl" x1="240" y1="376" x2="160" y2="406"/>
-    <line class="fl" x1="460" y1="376" x2="540" y2="406"/>
-    <rect class="bx" x="40" y="406" width="240" height="52" rx="8"/>
-    <text class="bt" x="54" y="428">Claim-readiness dashboard</text>
-    <text class="bs" x="54" y="446">"€X ready · €Y blocked"</text>
-    <rect class="bx" x="420" y="406" width="250" height="52" rx="8"/>
-    <text class="bt" x="434" y="428">Human review → Claim assembler</text>
-    <text class="bs" x="434" y="446">low-confidence fix · export packet · Stripe fee</text>
-  </svg></div>
-  <figcaption>Ingestion is fungible; the reconcile + confidence + rules layer is the moat. Filing stays human-in-the-loop until volume justifies portal integration.</figcaption>
-  </figure>
-
-  <h2><span class="n">6.3</span> Core technical challenges</h2>
+  <h2><span class="n">6.2</span> Core technical challenges</h2>
   <table class="t-tight">
     <thead><tr><th>Challenge</th><th>Approach</th></tr></thead>
     <tbody>
-      <tr><td>Multilingual messy-photo OCR</td><td>Dual-extractor (Claude vision + Veryfi/Mindee) + reconcile + confidence gating; human review below threshold. Bias to Claude's <strong>low hallucination</strong> — a wrong VAT number kills a claim.</td></tr>
+      <tr><td>Multilingual messy-photo OCR</td><td>Dual-extractor (LLM vision + Veryfi/Mindee) + reconcile + confidence gating; human review below threshold. Bias to the <strong>lowest-hallucination</strong> model — a wrong VAT number kills a claim.</td></tr>
       <tr><td>Per-country tax rules</td><td>Versioned config-driven engine (recoverability, caps, blocked categories, excise rates) — never hardcode.</td></tr>
       <tr><td>Invoice validity</td><td>Automated checks: valid supplier VAT ID (VIES), required fields, gross = net + VAT, date within claim window.</td></tr>
+      <tr><td>E-filing &amp; authorization</td><td><strong>Colaboración social</strong> + <strong>apoderamiento</strong> (REGAPO) for the right to file; submit modelo 360 by <strong>file upload</strong> or <strong>AEAT web service</strong> (SOAP, certificate — sandbox available). Human sign-off before every submit.</td></tr>
       <tr><td>Day-counting (per-diem)</td><td>Tachograph <code>.ddd</code> + GPS to count <em>actual</em> nights; store evidence for audit (German courts require nights actually in-cab).</td></tr>
       <tr><td>GDPR / privacy</td><td>EU-region hosting, encryption at rest, DPA with the LLM vendor (or self-host OCR for PII), consent + retention/deletion, audit log.</td></tr>
       <tr><td>Fraud / accuracy</td><td>Confidence thresholds, dedup (same receipt twice), anomaly flags (impossible litres/dates), mandatory human sign-off before filing.</td></tr>
     </tbody>
   </table>
 
-  <h2><span class="n">6.4</span> Recommended stack &amp; iteration principles</h2>
+  <h2><span class="n">6.3</span> Recommended stack &amp; iteration principles</h2>
   <div class="cols">
     <div>
       <h3>Stack</h3>
-      <p class="small">Supabase (Postgres + auth + storage, EU) · Claude API (extraction + agentic review) · Veryfi/Mindee cross-check · Next PWA → Expo mobile · Twilio WhatsApp + Postmark/Mailgun inbound · Stripe (success-fee) · Temporal/job queue for the extract→validate→assemble pipeline · Cloudflare R2 for docs.</p>
+      <p class="small">Supabase (Postgres + auth + storage, EU) · an LLM API (e.g. Claude) for extraction + agentic review · Veryfi/Mindee cross-check · Next PWA → Expo mobile · Twilio WhatsApp + Postmark/Mailgun inbound · Stripe (success-fee) · Temporal/job queue for the extract→validate→assemble pipeline · Cloudflare R2 for docs.</p>
     </div>
     <div>
       <h3>Fast-iteration principles</h3>
       <ol class="small" style="margin:0">
         <li>Measure <strong>€ recovered</strong>, not documents processed.</li>
         <li>No-win-no-fee from day one.</li>
-        <li>Fake the tax logic (human in Airtable) before building the rules engine.</li>
+        <li>Fake the tax logic (human in a simple console) before building the rules engine.</li>
         <li>OCR is a commodity; reconciliation is the product.</li>
         <li>One country flow end-to-end until € flows — then fan out.</li>
         <li>Every rejected claim feeds a rule; every human fix tunes a threshold.</li>
@@ -147,11 +193,11 @@
     </div>
   </div>
 
-  <h2><span class="n">6.5</span> Roadmap at a glance</h2>
+  <h2><span class="n">6.4</span> Roadmap at a glance</h2>
   <table class="t-tight">
     <thead><tr><th>Phase</th><th>Weeks</th><th>Scope</th><th>Success metric</th></tr></thead>
     <tbody>
-      <tr><td><span class="pill" style="background:#e6f2f0;color:#0f766e">POC</span></td><td>0–8</td><td>WhatsApp/email ingest · LLM OCR · human verifies &amp; files</td><td>≥60% grant rights + send docs · ≥90% accuracy · € identified/filed ≥ 3× take-rate</td></tr>
+      <tr><td><span class="pill" style="background:#e6f2f0;color:#0f766e">POC</span><br><span class="muted" style="font-size:10.5px">Concierge pilot</span></td><td>0–8</td><td>WhatsApp/email ingest · LLM OCR · human verifies &amp; files</td><td>≥60% grant rights + send docs · ≥90% accuracy · € identified/filed ≥ 3× take-rate</td></tr>
       <tr><td><span class="pill navy">MVP</span></td><td>8–20</td><td>Self-serve PWA · dual-extractor · dashboard · Stripe fee · <strong>foreign-VAT flow</strong></td><td>100 paying carriers · ≥70% no-touch extraction</td></tr>
       <tr><td><span class="pill gray">Platform</span></td><td>24–72</td><td>Mobile apps · fuel-card/TMS + tachograph · multi-country engine · auto e-filing · white-label</td><td>Multi-country live · per-diem auto day-count · partner revenue</td></tr>
     </tbody>
@@ -162,7 +208,9 @@
     <a target="_blank" rel="noopener" href="https://www.mindee.com/blog/leading-ocr-api-solutions">Mindee OCR</a> ·
     <a target="_blank" rel="noopener" href="https://www.twilio.com/en-us/whatsapp/pricing">Twilio WhatsApp pricing</a> ·
     <a target="_blank" rel="noopener" href="https://taxation-customs.ec.europa.eu/taxation/vat/vat-directive/vat-refunds_en">EC VAT refunds</a> ·
-    <a target="_blank" rel="noopener" href="https://www.n2f.com/blog/en/per-diem-allowances-verpflegungsmehraufwand-2026/">n2f per-diem 2026</a>.
+    <a target="_blank" rel="noopener" href="https://www.n2f.com/blog/en/per-diem-allowances-verpflegungsmehraufwand-2026/">n2f per-diem 2026</a> ·
+    <a target="_blank" rel="noopener" href="https://sede.agenciatributaria.gob.es/Sede/procedimientoini/GZ09.shtml">AEAT modelo 360</a> ·
+    <a target="_blank" rel="noopener" href="https://www.agenciatributaria.es/static_files/AEAT_Desarrolladores/EEDD/General/EspecificacionesServiciosDeclaracionesAEAT_ES.pdf">AEAT web-service filing (developers)</a>.
   </div>
 
   <div class="pager">
