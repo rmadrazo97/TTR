@@ -19,7 +19,12 @@ export async function correctDocument(c: Context): Promise<Response> {
   if (!doc) return c.notFound();
 
   const form = await c.req.parseBody();
+  // Merge the 4 corrected scored fields ONTO the original extraction so non-scored context
+  // (supplier, country, category, currency, lineItems) survives the correction rather than
+  // being dropped — that context is needed downstream for the claim/statement.
+  const base = (doc.extraction?.fields ?? {}) as ExtractionFields;
   const corrected: ExtractionFields = {
+    ...base,
     vatId: nullIfBlank(form['vatId'] as string) ?? undefined,
     date: nullIfBlank(form['date'] as string) ?? undefined,
     gross: parseMoney(form['gross'] as string) ?? undefined,
@@ -98,9 +103,8 @@ export async function addToClaim(c: Context): Promise<Response> {
   const claim = await claims.get(claimId);
   if (!claim) return c.notFound();
 
-  if (!claim.document_ids.includes(id)) {
-    await claims.update(claimId, { document_ids: [...claim.document_ids, id] });
-  }
+  // Atomic, deduped append at the DB level (avoids the read-modify-write lost-update).
+  await claims.addDocuments(claimId, id);
   await documents.setStatus(id, 'claimed');
   await metrics.emit('document_added_to_claim', {
     documentId: id,

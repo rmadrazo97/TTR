@@ -18,9 +18,8 @@ import {
   documents as documentsRepo,
   extractions as extractionsRepo,
   metrics as metricsRepo,
-  query as coreQuery,
 } from '@ttr/core';
-import type { Config, Document, Extractor, ExtractInput, ExtractResult } from '@ttr/core';
+import type { Config, Document, Extractor, ExtractResult } from '@ttr/core';
 import { s3BlobStore } from './storage.js';
 import type { BlobStore } from './storage.js';
 
@@ -68,8 +67,6 @@ export interface ProcessDeps {
   blobs: BlobStore;
   /** Build the extractor for a document (defaults to the config-driven factory). */
   makeExtractor: () => Extractor;
-  /** Delete any prior extraction rows for a document (idempotent re-runs). */
-  clearExtractions: (documentId: string) => Promise<void>;
   retry: RetryConfig;
   /** Sleep hook — overridden in tests to avoid real waits. */
   sleep: (ms: number) => Promise<void>;
@@ -117,11 +114,6 @@ function consoleLog(
 
 const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
 
-/** Remove prior extraction rows for a document so a re-run overwrites (PRD 02 §6). */
-async function clearExtractions(documentId: string): Promise<void> {
-  await coreQuery(`delete from extraction where document_id = $1`, [documentId]);
-}
-
 /** Build the default, production dependency set from config + @ttr/core. */
 export function defaultDeps(cfg: Config = loadConfig()): ProcessDeps {
   return {
@@ -137,7 +129,6 @@ export function defaultDeps(cfg: Config = loadConfig()): ProcessDeps {
     },
     blobs: s3BlobStore,
     makeExtractor: () => makeExtractor(cfg),
-    clearExtractions,
     retry: { maxAttempts: 3, baseDelayMs: 500 },
     sleep,
     log: consoleLog,
@@ -194,24 +185,9 @@ async function withRetry<T>(
 }
 
 /**
- * Run the extractor with bounded retries + exponential backoff on transient errors.
- * Non-transient errors fail fast. Throws the last error if every attempt fails.
- *
- * @deprecated Prefer `withRetry` directly. Kept for backward-compatibility.
- */
-async function extractWithRetry(
-  extractor: Extractor,
-  input: ExtractInput,
-  deps: ProcessDeps,
-  documentId: string,
-): Promise<ExtractResult> {
-  return withRetry(() => extractor.extract(input), deps, documentId, 'extract');
-}
-
-/**
- * Process a single already-claimed document end to end. Idempotent: clears any prior
- * extraction rows before inserting. On unrecoverable failure it flags the document
- * `extraction_failed` and emits a metric (never drops it).
+ * Process a single already-claimed document end to end. Idempotent: the extraction
+ * UPSERT on (document_id) atomically overwrites any prior row. On unrecoverable failure
+ * it flags the document `extraction_failed` and emits a metric (never drops it).
  */
 export async function processDocument(
   doc: Document,
@@ -231,16 +207,19 @@ export async function processDocument(
       'download',
     );
     const extractor = deps.makeExtractor();
-    const result = await extractWithRetry(
-      extractor,
-      { buffer, mime: doc.mime ?? 'application/octet-stream', filename: filenameFromKey(doc.r2_key) },
+    const result = await withRetry(
+      () =>
+        extractor.extract({
+          buffer,
+          mime: doc.mime ?? 'application/octet-stream',
+          filename: filenameFromKey(doc.r2_key),
+        }),
       deps,
       documentId,
+      'extract',
     );
 
-    // Idempotency: a re-run overwrites rather than duplicates.
-    await deps.clearExtractions(documentId);
-
+    // Idempotency: UPSERT on (document_id) atomically overwrites any prior extraction row.
     const extraction = await deps.extractions.insert({
       document_id: documentId,
       fields: result.fields,

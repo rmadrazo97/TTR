@@ -151,8 +151,12 @@ export function verifySignature(
   if (timestamp === undefined || timestamp === null || timestamp === '') return false;
   const timestampStr = String(timestamp);
   const nowMs = opts.nowMs ?? Date.now();
-  const skipTimestampCheck =
-    opts.skipTimestampCheck ?? process.env['WEBHOOK_SKIP_TIMESTAMP_CHECK'] === 'true';
+  // The env-var replay bypass is honored ONLY outside production (frozen fixtures in
+  // dev/test). An explicit opts.skipTimestampCheck (unit tests) still works everywhere.
+  const envAllowsSkip =
+    process.env.NODE_ENV !== 'production' &&
+    process.env['WEBHOOK_SKIP_TIMESTAMP_CHECK'] === 'true';
+  const skipTimestampCheck = opts.skipTimestampCheck ?? envAllowsSkip;
 
   // Scheme 2 — repo fixture / snake_case (Mailgun-style: timestamp + signed compact body).
   if (p['to'] !== undefined || p['message_id'] !== undefined) {

@@ -98,8 +98,10 @@ export async function computeGates(): Promise<GateSummary> {
        select id from driver
      ),
      granted as (
+       -- G2 = granted filing rights via EITHER authorization type (apoderamiento or
+       -- colaborador social); same definition as the onboarding status board.
        select distinct driver_id from authorization_grant
-        where type = 'apoderamiento' and status in ('granted','verified')
+        where type in ('apoderamiento','colaborador_social') and status in ('granted','verified')
      ),
      sent as (
        select distinct driver_id from document where driver_id is not null
@@ -142,9 +144,12 @@ export async function computeGates(): Promise<GateSummary> {
   }
   const accuracy = fieldTotal > 0 ? fieldCorrect / fieldTotal : null;
 
-  // --- G3 €: filed claims (disposition='file') recoverable, per int'l truck ---
+  // --- G3 €: filed claims recoverable, per int'l truck. The POC files Stream A only, so
+  // "€ filed" MUST be scoped to filed + disposition='file' + foreign_vat (else assure/
+  // identify_only claims inflate the money gate). ---
   const filed = await query<{ recoverable_eur: string | null }>(
-    `select recoverable_eur from claim where status = 'filed'`,
+    `select recoverable_eur from claim
+      where status = 'filed' and disposition = 'file' and type = 'foreign_vat'`,
   );
   const filedAmts = filed
     .map((r) => (r.recoverable_eur == null ? null : Number.parseFloat(r.recoverable_eur)))
@@ -153,30 +158,36 @@ export async function computeGates(): Promise<GateSummary> {
 
   // Denominator: distinct international trucks (drivers) with at least one filed claim's
   // documents — approximated at carrier level via intl_runner flag (PRD 06 §12 note).
+  // Trucks (not drivers): sum of fleet_size across international carriers (default 1 when unset).
   const trucks = await query<{ intl_trucks: string }>(
-    `select count(distinct d.id)::text as intl_trucks
-       from driver d
-       join carrier c on c.id = d.carrier_id and c.intl_runner = true`,
+    `select coalesce(sum(coalesce(fleet_size, 1)), 0)::text as intl_trucks
+       from carrier where intl_runner = true`,
   );
   const intlTrucks = Number(trucks[0]?.intl_trucks ?? 0);
 
-  // Per-truck median: recoverable_eur of filed claims attributed to a carrier's drivers.
-  const perTruck = await query<{ driver_id: string; total: string }>(
-    `select d.id as driver_id, coalesce(sum(cl.recoverable_eur),0)::text as total
-       from driver d
-       join carrier c on c.id = d.carrier_id and c.intl_runner = true
-       left join claim cl on cl.carrier_id = c.id and cl.status = 'filed'
-      group by d.id`,
+  // Median € recovered per international CARRIER (proxy for per-truck; PRD 06 §12 open q on
+  // truck attribution). Computed per carrier — NOT fanned across its drivers — scoped to filed
+  // foreign-VAT claims, and INCLUDING zero-recovery carriers so the median isn't biased upward
+  // by dropping them.
+  const perCarrier = await query<{ carrier_id: string; total: string }>(
+    `select c.id as carrier_id,
+            coalesce(sum(cl.recoverable_eur) filter (
+              where cl.status = 'filed' and cl.disposition = 'file' and cl.type = 'foreign_vat'
+            ), 0)::text as total
+       from carrier c
+       left join claim cl on cl.carrier_id = c.id
+      where c.intl_runner = true
+      group by c.id`,
   );
-  const perTruckAmts = perTruck
+  const perCarrierAmts = perCarrier
     .map((r) => Number.parseFloat(r.total))
-    .filter((n) => !Number.isNaN(n) && n > 0);
-  const medianEurPerTruck = median(perTruckAmts);
+    .filter((n) => !Number.isNaN(n));
+  const medianEurPerTruck = median(perCarrierAmts);
 
   // Identified vs filed: recoverable on ready OR filed claims.
   const identified = await query<{ total: string | null }>(
     `select coalesce(sum(recoverable_eur),0)::text as total
-       from claim where status in ('ready','filed')`,
+       from claim where status in ('ready','filed') and disposition = 'file' and type = 'foreign_vat'`,
   );
   const identifiedEur = Number.parseFloat(identified[0]?.total ?? '0') || 0;
 

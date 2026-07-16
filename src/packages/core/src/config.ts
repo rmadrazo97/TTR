@@ -72,17 +72,38 @@ function int(name: string, fallback: number): number {
 }
 
 /**
+ * Known insecure dev defaults that must never reach production. `secret()` FAILS CLOSED:
+ * outside development it throws if the value is unset OR left at one of these defaults, so
+ * a misconfigured deploy refuses to start rather than accepting `changeme` / `ttr_dev_pw`.
+ * In development it returns the devFallback (offline docker-compose keeps working).
+ */
+const KNOWN_DEFAULTS = new Set(['changeme', 'ttr_dev_pw', 'ttr_minio', 'ttr_minio_dev_pw']);
+
+function secret(name: string, devFallback: string): string {
+  const v = process.env[name];
+  const isProd = process.env.NODE_ENV === 'production';
+  if (v === undefined || v === '') {
+    if (isProd) throw new Error(`[@ttr/core config] ${name} must be set (no default) in production`);
+    return devFallback;
+  }
+  if (isProd && (v === devFallback || KNOWN_DEFAULTS.has(v))) {
+    throw new Error(`[@ttr/core config] ${name} is a known insecure default — refusing to start in production`);
+  }
+  return v;
+}
+
+/**
  * Load and validate config from the environment (loading infra/.env if present).
  * Throws with a clear message if a required key is missing.
  */
 export function loadConfig(): Config {
   ensureDotenv();
   return {
-    databaseUrl: req('DATABASE_URL', 'postgres://ttr:ttr_dev_pw@localhost:5432/ttr'),
+    databaseUrl: secret('DATABASE_URL', 'postgres://ttr:ttr_dev_pw@localhost:5432/ttr'),
     s3: {
       endpoint: req('S3_ENDPOINT', 'http://localhost:9000'),
-      accessKey: req('S3_ACCESS_KEY', 'ttr_minio'),
-      secretKey: req('S3_SECRET_KEY', 'ttr_minio_dev_pw'),
+      accessKey: secret('S3_ACCESS_KEY', 'ttr_minio'),
+      secretKey: secret('S3_SECRET_KEY', 'ttr_minio_dev_pw'),
       region: req('S3_REGION', 'eu'),
       bucket: req('R2_BUCKET', 'ttr-receipts-eu'),
       forcePathStyle: true,
@@ -93,7 +114,7 @@ export function loadConfig(): Config {
     },
     llmApiKey: process.env.LLM_API_KEY ?? '',
     extractionMock: bool('EXTRACTION_MOCK', true),
-    webhookSecret: req('INBOUND_WEBHOOK_SECRET', 'changeme'),
+    webhookSecret: secret('INBOUND_WEBHOOK_SECRET', 'changeme'),
     ingestDomain: req('INGEST_DOMAIN', 'ingest.ttr.example'),
   };
 }

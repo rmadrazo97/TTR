@@ -12,7 +12,6 @@ interface Harness {
   deps: ProcessDeps;
   statuses: string[]; // document status transitions, in order
   extractions: Array<{ document_id: string; model: string; overall: number }>;
-  cleared: string[]; // documentIds whose prior extractions were cleared
   metrics: Array<{ type: string; payload?: Record<string, unknown> }>;
 }
 
@@ -46,7 +45,6 @@ function makeHarness(opts: HarnessOpts = {}): Harness {
   const queue = [...(opts.queue ?? [makeDoc()])];
   const statuses: string[] = [];
   const extractions: Harness['extractions'] = [];
-  const cleared: string[] = [];
   const metrics: Harness['metrics'] = [];
   let extractionSeq = 0;
 
@@ -61,11 +59,14 @@ function makeHarness(opts: HarnessOpts = {}): Harness {
     },
     extractions: {
       async insert(x) {
-        extractions.push({
-          document_id: x.document_id,
-          model: x.model,
-          overall: x.confidence.overall,
-        });
+        // Simulate UPSERT: replace any prior row for this document_id.
+        const idx = extractions.findIndex((e) => e.document_id === x.document_id);
+        const entry = { document_id: x.document_id, model: x.model, overall: x.confidence.overall };
+        if (idx >= 0) {
+          extractions[idx] = entry;
+        } else {
+          extractions.push(entry);
+        }
         return { id: `ext-${++extractionSeq}` };
       },
     },
@@ -78,15 +79,12 @@ function makeHarness(opts: HarnessOpts = {}): Harness {
       getObject: opts.blob ?? (async () => Buffer.from('synthetic-bytes')),
     },
     makeExtractor: () => opts.extractor ?? new MockExtractor(),
-    clearExtractions: async (documentId) => {
-      cleared.push(documentId);
-    },
     retry: { maxAttempts: opts.maxAttempts ?? 3, baseDelayMs: 1 },
     sleep: async () => {}, // never actually wait in tests
     log: () => {},
   };
 
-  return { deps, statuses, extractions, cleared, metrics };
+  return { deps, statuses, extractions, metrics };
 }
 
 // A fixed extractor with line items, so we assert multi-line fuel-card handling.
@@ -165,10 +163,14 @@ describe('processOnce — happy path', () => {
     expect(h.metrics.map((m) => m.type)).not.toContain('extraction_failed');
   });
 
-  it('clears prior extractions before inserting (idempotent re-runs)', async () => {
-    const h = makeHarness();
+  it('upserts on re-run — exactly one extraction row, not two (idempotent)', async () => {
+    // Re-run the same document twice: the UPSERT must leave only one extraction entry.
+    const doc = makeDoc();
+    const h = makeHarness({ queue: [doc, doc] });
     await processOnce(h.deps);
-    expect(h.cleared).toEqual(['doc-1']);
+    await processOnce(h.deps);
+    expect(h.extractions).toHaveLength(1);
+    expect(h.extractions[0]!.document_id).toBe('doc-1');
   });
 
   it('returns idle when the queue is empty', async () => {

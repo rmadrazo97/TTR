@@ -16,38 +16,22 @@ export interface AuthorizationInput {
 }
 
 /**
- * Insert or update the driver's authorization of the given `type`. There's no unique
- * constraint in the DDL, so this does an explicit find-then-write to stay idempotent.
+ * Insert or update the driver's authorization of the given `type` in ONE atomic
+ * statement via the `unique (driver_id, type)` constraint (init.sql). A null field in
+ * the update path leaves the existing value untouched (coalesce on the params, NOT on
+ * `excluded`, so a re-run with `status` omitted never downgrades a `granted` back to
+ * `requested`). The prior find-then-write could race two concurrent onboarding steps
+ * into duplicate live grants.
  */
 async function upsert(input: AuthorizationInput): Promise<Authorization> {
-  const existing = await query<Authorization>(
-    `select * from authorization_grant where driver_id = $1 and type = $2 limit 1`,
-    [input.driver_id, input.type],
-  );
-
-  if (existing[0]) {
-    const rows = await query<Authorization>(
-      `update authorization_grant
-          set cert_type    = coalesce($2, cert_type),
-              status       = coalesce($3, status),
-              evidence_ref = coalesce($4, evidence_ref),
-              granted_at   = coalesce($5, granted_at)
-        where id = $1
-        returning *`,
-      [
-        existing[0].id,
-        input.cert_type ?? null,
-        input.status ?? null,
-        input.evidence_ref ?? null,
-        input.granted_at ?? null,
-      ],
-    );
-    return rows[0]!;
-  }
-
   const rows = await query<Authorization>(
     `insert into authorization_grant (driver_id, type, cert_type, status, evidence_ref, granted_at)
      values ($1, $2, $3, coalesce($4, 'requested'), $5, $6)
+     on conflict (driver_id, type) do update set
+       cert_type    = coalesce($3, authorization_grant.cert_type),
+       status       = coalesce($4, authorization_grant.status),
+       evidence_ref = coalesce($5, authorization_grant.evidence_ref),
+       granted_at   = coalesce($6, authorization_grant.granted_at)
      returning *`,
     [
       input.driver_id,

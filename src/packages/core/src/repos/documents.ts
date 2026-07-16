@@ -4,7 +4,7 @@
  * (FOR UPDATE SKIP LOCKED) and the console's review-queue reads (with the joined
  * extraction, ordered by lowest overall confidence first).
  */
-import { getPool, query } from '../db.js';
+import { query } from '../db.js';
 import type { Document, DocumentSource, DocumentStatus, Extraction } from '../types.js';
 
 export interface DocumentInput {
@@ -77,34 +77,30 @@ async function insert(doc: DocumentInput): Promise<{ document: Document; created
 }
 
 /**
- * Atomically claim the oldest `received` document for extraction. Uses
- * FOR UPDATE SKIP LOCKED so many workers can pull without contention. The caller is
- * responsible for advancing the status (e.g. to `ready_for_review`) afterwards.
- * Returns null when the queue is empty.
+ * Atomically claim the oldest `received` document for extraction and flip it to
+ * `processing` in the SAME statement. The FOR UPDATE SKIP LOCKED subquery lets many
+ * workers pull without contention, and because the status change is part of the claim
+ * (not a later, separate write), a second worker can never re-claim the same row — the
+ * prior implementation released the row lock at COMMIT before the caller changed status,
+ * so two workers could process one document. Returns null when the queue is empty.
+ *
+ * (A crashed worker leaves a doc in `processing`; a stale-`processing` reaper is future
+ * work — out of scope for the POC's single-worker pilot.)
  */
 async function claimNextReceived(): Promise<Document | null> {
-  const client = await getPool().connect();
-  try {
-    await client.query('BEGIN');
-    const res = await client.query<Document>(
-      `select * from document
-        where status = 'received'
-        order by received_at asc
-        for update skip locked
-        limit 1`,
-    );
-    await client.query('COMMIT');
-    return res.rows[0] ?? null;
-  } catch (err) {
-    try {
-      await client.query('ROLLBACK');
-    } catch {
-      /* ignore */
-    }
-    throw err;
-  } finally {
-    client.release();
-  }
+  const rows = await query<Document>(
+    `update document
+        set status = 'processing'
+      where id = (
+        select id from document
+         where status = 'received'
+         order by received_at asc
+         for update skip locked
+         limit 1
+      )
+     returning *`,
+  );
+  return rows[0] ?? null;
 }
 
 async function setStatus(id: string, status: DocumentStatus): Promise<void> {

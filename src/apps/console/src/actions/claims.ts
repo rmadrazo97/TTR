@@ -81,6 +81,13 @@ export async function fileClaim(c: Context): Promise<Response> {
   // Guard: skip re-filing an already-filed claim (prevents duplicate Filing rows).
   if (claim.status === 'filed') return c.redirect(`/claims/${id}`);
 
+  // POC files Stream A only — foreign VAT via modelo 360 (PRD 00/03). Refuse to file
+  // 'assure' (gasóleo trust-hook) or 'identify_only' (excise/dietas upsell) claims, or any
+  // non-foreign_vat type. The filing card is hidden for these in the UI; this is the server guard.
+  if (claim.disposition !== 'file' || claim.type !== 'foreign_vat') {
+    return c.redirect(`/claims/${id}`);
+  }
+
   const form = await c.req.parseBody();
   const filing = await filings.create({
     claim_id: id,

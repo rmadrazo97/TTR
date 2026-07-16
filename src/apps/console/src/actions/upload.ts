@@ -11,6 +11,11 @@
 import type { Context } from 'hono';
 import { documents, drivers, putObject, metrics, query } from '@ttr/core';
 
+/** Same allowlist + size cap the ingest webhook enforces (PRD 01 FR4) — the backlog
+ *  upload is another ingest surface and must not accept what email ingest would reject. */
+const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'application/pdf']);
+const MAX_UPLOAD_BYTES = 25 * 1024 * 1024;
+
 function extFor(name: string, mime: string): string {
   const m = /\.([a-z0-9]+)$/i.exec(name);
   if (m) return m[1]!.toLowerCase();
@@ -49,10 +54,16 @@ export async function bulkUpload(c: Context): Promise<Response> {
   let driverHadDocs = Number(prior[0]?.n ?? 0) > 0;
 
   let uploaded = 0;
+  let skipped = 0;
   for (let i = 0; i < files.length; i++) {
     const file = files[i]!;
     if (!file.name && file.size === 0) continue;
     const mime = file.type || 'application/octet-stream';
+    // Reject disallowed types / oversized files (checked via file.size before reading bytes).
+    if (!ALLOWED_MIME.has(mime) || file.size > MAX_UPLOAD_BYTES) {
+      skipped++;
+      continue;
+    }
     const ext = extFor(file.name, mime);
     const key = `receipts/${driverId}/${yyyy}/${mm}/${messageId}-${i}.${ext}`;
     const body = Buffer.from(await file.arrayBuffer());
@@ -84,5 +95,5 @@ export async function bulkUpload(c: Context): Promise<Response> {
     }
   }
 
-  return c.redirect(`/upload?uploaded=${uploaded}`);
+  return c.redirect(`/upload?uploaded=${uploaded}&skipped=${skipped}`);
 }

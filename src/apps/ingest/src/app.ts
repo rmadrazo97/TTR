@@ -47,6 +47,12 @@ export function defaultDeps(): InboundDeps {
 }
 
 /**
+ * Cap the inbound body size (pre-parse) to bound memory before we do any auth work.
+ * 25 MiB max message (PRD 01) + base64 (~33%) + JSON framing → 30 MiB ceiling.
+ */
+const MAX_INBOUND_BYTES = 30 * 1024 * 1024;
+
+/**
  * Build the Hono app. `cfg`/`deps` are injectable so tests can drive the routes with
  * mocks and never touch a real DB/S3/SMTP.
  */
@@ -58,6 +64,11 @@ export function createApp(cfg: Config = loadConfig(), deps: InboundDeps = defaul
 
   // The single ingestion surface (PRD 01 FR1–11).
   app.post('/inbound', async (c) => {
+    // Reject oversized bodies before parsing (pre-auth memory guard).
+    const declaredLen = Number(c.req.header('content-length'));
+    if (Number.isFinite(declaredLen) && declaredLen > MAX_INBOUND_BYTES) {
+      return c.json({ error: 'payload too large' }, 413);
+    }
     let raw: unknown;
     try {
       raw = await c.req.json();

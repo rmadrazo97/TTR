@@ -18,6 +18,13 @@ async function insert(x: ExtractionInput): Promise<Extraction> {
   const rows = await query<Extraction>(
     `insert into extraction (document_id, fields, confidence, model, status)
      values ($1, $2::jsonb, $3::jsonb, $4, coalesce($5, 'ready_for_review'))
+     on conflict (document_id) do update set
+       fields      = excluded.fields,
+       confidence  = excluded.confidence,
+       model       = excluded.model,
+       status      = excluded.status,
+       corrected_fields = null,
+       created_at  = now()
      returning *`,
     [
       x.document_id,

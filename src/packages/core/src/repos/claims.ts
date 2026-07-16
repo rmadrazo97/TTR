@@ -90,6 +90,24 @@ async function update(id: string, patch: ClaimPatch): Promise<Claim> {
   return rows[0];
 }
 
+/**
+ * Atomically append a document to a claim's `document_ids`, deduped, at the DB level —
+ * avoids the read-modify-write lost-update when two documents are added concurrently.
+ */
+async function addDocuments(id: string, documentId: string): Promise<Claim> {
+  const rows = await query<Claim>(
+    `update claim
+        set document_ids = (
+          select array(select distinct unnest(document_ids || $2::uuid))
+        )
+      where id = $1
+      returning *`,
+    [id, documentId],
+  );
+  if (!rows[0]) throw new Error(`[@ttr/core claims.addDocuments] no claim with id ${id}`);
+  return rows[0];
+}
+
 async function list(carrierId?: string): Promise<Claim[]> {
   if (carrierId) {
     return query<Claim>(`select * from claim where carrier_id = $1 order by created_at asc`, [
@@ -104,4 +122,4 @@ async function get(id: string): Promise<Claim | null> {
   return rows[0] ?? null;
 }
 
-export const claims = { create, update, list, get };
+export const claims = { create, update, addDocuments, list, get };

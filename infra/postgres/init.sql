@@ -36,7 +36,8 @@ create table authorization_grant (
   cert_type   text check (cert_type in ('FNMT','Clave')),
   status      text check (status in ('requested','granted','verified')) default 'requested',
   evidence_ref text,
-  granted_at  timestamptz
+  granted_at  timestamptz,
+  unique (driver_id, type)          -- one live grant per (driver, type); enables ON CONFLICT upsert
 );
 
 -- One attachment = one Document (emails carry several); asesor_upload = the historical backlog.
@@ -53,7 +54,7 @@ create table document (
   size_bytes        bigint,
   source            text check (source in ('forwarded','asesor_upload')) default 'forwarded',
   status            text check (status in
-                      ('received','ready_for_review','reviewed','claimed','extraction_failed'))
+                      ('received','processing','ready_for_review','reviewed','claimed','extraction_failed'))
                       default 'received',
   received_at       timestamptz default now(),
   unique (message_id, attachment_index)
@@ -113,6 +114,6 @@ create table metric_event (
 
 create index on document (driver_id);
 create index on document (status);
-create index on extraction (document_id);
+create unique index on extraction (document_id);
 create index on claim (carrier_id);
 create index on metric_event (type, created_at);

@@ -224,7 +224,15 @@ describe('POST /documents/:id/correct persists correction + status', () => {
     expect(h.setCorrected).toHaveBeenCalledTimes(1);
     const [exId, corrected] = h.setCorrected.mock.calls[0]!;
     expect(exId).toBe('ex-1');
-    expect(corrected).toEqual({ vatId: 'FR999', date: '2026-05-02', gross: 120.5, vat: 25 });
+    // corrected fields are MERGED onto the original extraction, so non-scored context
+    // (supplier) survives the correction rather than being dropped.
+    expect(corrected).toEqual({
+      supplier: 'Total',
+      vatId: 'FR999',
+      date: '2026-05-02',
+      gross: 120.5,
+      vat: 25,
+    });
 
     // document marked reviewed
     expect(h.setStatus).toHaveBeenCalledWith('doc-1', 'reviewed');

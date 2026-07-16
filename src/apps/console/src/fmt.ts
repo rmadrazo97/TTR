@@ -42,23 +42,27 @@ export function parseMoney(raw: string | undefined | null): number | null {
   let s = String(raw).trim();
   if (s === '') return null;
   s = s.replace(/[€$\s]/g, '');
-  // If both separators present, the last one is the decimal separator.
-  const lastComma = s.lastIndexOf(',');
-  const lastDot = s.lastIndexOf('.');
-  if (lastComma !== -1 && lastDot !== -1) {
-    if (lastComma > lastDot) {
-      // es-ES: 1.234,56 -> thousands '.', decimal ','
-      s = s.replace(/\./g, '').replace(',', '.');
+  if (!/^[0-9.,]+$/.test(s)) return null; // digits + separators only — no partial coercion
+  const dots = (s.match(/\./g) || []).length;
+  const commas = (s.match(/,/g) || []).length;
+  if (dots > 0 && commas > 0) {
+    // Both present: the LAST separator is the decimal; the other is the thousands grouping.
+    if (s.lastIndexOf(',') > s.lastIndexOf('.')) {
+      s = s.replace(/\./g, '').replace(',', '.'); // es-ES: 1.234,56
     } else {
-      // en: 1,234.56 -> thousands ',', decimal '.'
-      s = s.replace(/,/g, '');
+      s = s.replace(/,/g, ''); // en: 1,234.56
     }
-  } else if (lastComma !== -1) {
-    // only comma: treat as decimal separator (1234,56)
-    s = s.replace(/\./g, '').replace(',', '.');
+  } else if (commas > 0) {
+    // Comma(s) only: several commas can only be thousands grouping; a single comma is the
+    // es-ES decimal separator.
+    s = commas > 1 ? s.replace(/,/g, '') : s.replace(',', '.');
+  } else if (dots > 1) {
+    // Several dots, no comma (e.g. "1.234.567"): ambiguous — REJECT rather than let
+    // parseFloat silently truncate at the second dot.
+    return null;
   }
   const n = Number.parseFloat(s);
-  return Number.isNaN(n) ? null : n;
+  return Number.isNaN(n) || !Number.isFinite(n) ? null : n;
 }
 
 /** Parse an integer form field, or null when blank/unparseable. */

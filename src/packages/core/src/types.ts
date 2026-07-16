@@ -22,6 +22,7 @@ export type DocumentSource = 'forwarded' | 'asesor_upload';
 /** `document.status` */
 export type DocumentStatus =
   | 'received'
+  | 'processing' // claimed by a worker (atomic claim); prevents double-processing
   | 'ready_for_review'
   | 'reviewed'
   | 'claimed'
