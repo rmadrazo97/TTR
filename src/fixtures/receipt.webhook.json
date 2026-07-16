@@ -1,0 +1,17 @@
+{
+  "timestamp": "1784107440",
+  "signature": "0efd20d97d46620415e03c8d05a9dc86d48656cad85bd5c3285662940138506f",
+  "message_id": "<syn-0001@mail.example.com>",
+  "from": "juan.perez@example.com",
+  "to": "juan.perez@ingest.ttr.example",
+  "subject": "Factura gasolinera Francia",
+  "received_at": "2026-07-15T09:24:00.000Z",
+  "text": "Adjunto el ticket de repostaje. Gracias.",
+  "attachments": [
+    {
+      "filename": "receipt-fr-001.png",
+      "content_type": "image/png",
+      "content_base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+    }
+  ]
+}

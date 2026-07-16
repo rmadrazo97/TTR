@@ -1,0 +1,22 @@
+{
+  "name": "@ttr/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "TTR POC extraction worker (PRD 02): a long-running poller that turns a received Document into a structured Extraction (fields + confidence) and marks it ready_for_review. Deterministic MOCK by default (EXTRACTION_MOCK=true, no network).",
+  "main": "./src/index.ts",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -b",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ttr/core": "*",
+    "@aws-sdk/client-s3": "^3"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "vitest": "^2"
+  }
+}

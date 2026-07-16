@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+*.tsbuildinfo
+
+# Environment / secrets — SYNTHETIC data only, never commit real values
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.DS_Store

@@ -1,0 +1,25 @@
+{
+  "name": "ttr-poc",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "description": "TTR POC monorepo — email ingest → AI extraction → concierge review of foreign fuel/toll receipts.",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "typecheck": "tsc -b",
+    "test": "vitest run",
+    "seed": "tsx scripts/seed.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "typescript": "^5.6",
+    "vitest": "^2",
+    "tsx": "^4",
+    "@types/node": "^20"
+  }
+}

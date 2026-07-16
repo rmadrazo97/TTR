@@ -1,0 +1,90 @@
+# TTR POC — local development infrastructure
+#
+# Production runtime is serverless (Cloudflare Workers/Queues + R2 + managed EU Postgres).
+# This compose provides local stand-ins so the ingest → extract → review pipeline runs
+# end-to-end offline against SYNTHETIC data. See tasks/prd/00-dev-infra.md.
+#
+# Quick start:  cp .env.example .env && docker compose up -d
+# With extras:  docker compose --profile tools --profile console up -d
+name: ttr-poc
+
+services:
+  postgres:                       # canonical DB (managed EU Postgres in prod)
+    image: postgres:16-alpine
+    container_name: ttr-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ttr}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ttr_dev_pw}
+      POSTGRES_DB: ${POSTGRES_DB:-ttr}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ttr} -d ${POSTGRES_DB:-ttr}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  minio:                          # S3-compatible stand-in for Cloudflare R2 (jurisdiction=eu in prod)
+    image: minio/minio:latest
+    container_name: ttr-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-ttr_minio}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-ttr_minio_dev_pw}
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - miniodata:/data
+
+  createbuckets:                  # one-shot: create the receipts bucket, then exit
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    environment:
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-ttr_minio}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-ttr_minio_dev_pw}
+      R2_BUCKET: ${R2_BUCKET:-ttr-receipts-eu}
+    entrypoint: >
+      /bin/sh -c "
+      until mc alias set local http://minio:9000 $$S3_ACCESS_KEY $$S3_SECRET_KEY; do
+        echo 'waiting for minio...'; sleep 2;
+      done &&
+      mc mb --ignore-existing local/$$R2_BUCKET &&
+      echo 'bucket ready: '$$R2_BUCKET
+      "
+    restart: "no"
+
+  mailpit:                        # SMTP sink + web UI to view outbound acks locally
+    image: axllent/mailpit:latest
+    container_name: ttr-mailpit
+    ports:
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+
+  adminer:                        # lightweight DB browser (optional)
+    image: adminer:latest
+    container_name: ttr-adminer
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${ADMINER_PORT:-8080}:8080"
+    profiles: ["tools"]
+
+  appsmith:                       # self-hosted low-code asesor console (optional, heavy ~2GB) — PRD 04
+    image: appsmith/appsmith-ce:latest
+    container_name: ttr-appsmith
+    ports:
+      - "${APPSMITH_PORT:-8090}:80"
+    volumes:
+      - appsmith:/appsmith-stacks
+    profiles: ["console"]
+
+volumes:
+  pgdata:
+  miniodata:
+  appsmith:

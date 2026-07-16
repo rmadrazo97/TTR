@@ -1,0 +1,21 @@
+{
+  "name": "@ttr/ingest",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "TTR inbound email ingestion (PRD 01). A portable Hono app (Node now, Cloudflare Worker later): verify the parse-webhook signature, resolve the driver, store attachments in R2/S3, record one Document per attachment, ack the driver. Never runs extraction.",
+  "exports": {
+    ".": "./src/app.ts"
+  },
+  "scripts": {
+    "start": "tsx src/server.ts",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -b",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@ttr/core": "*",
+    "hono": "^4",
+    "@hono/node-server": "^1"
+  }
+}
