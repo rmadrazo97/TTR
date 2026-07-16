@@ -1,5 +1,12 @@
 # Architecture (draft)
 
+> ⚠️ **Outdated framing (2026-07).** This draft predates the market-research
+> dossier and is US/IFTA-flavored. TTR's current direction is **EU road-freight
+> tax recovery** (foreign VAT + professional-diesel excise + per-diem) with a
+> **Spanish first market** — see [`DOSSIER.md`](DOSSIER.md), [`../AGENTS.md`](../AGENTS.md),
+> and the dossier in `../research/`. The high-level flow below still broadly
+> applies; the specific jurisdictions/tax-types (IFTA, US federal fuel-tax) do not.
+
 This document captures early thinking for TTR. It is intentionally
 technology-agnostic until the first real requirements land.
 
